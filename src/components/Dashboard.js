@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 function Dashboard({ onLogout, user }) {
   // Navigation & Role Configuration States
-  const [currentUserRole, setCurrentUserRole] = useState('PATIENT'); // Switch between PATIENT and STAFF/DOCTOR
-  const [activeTab, setActiveTab] = useState('healthLogs');
+  const [currentUserRole, setCurrentUserRole] = useState('PATIENT'); 
+  const [activeTab, setActiveTab] = useState('profile'); // Defaulted to Profile to see the new feature immediately
 
   // 1. Mock Data representing 'PregnancyProfile' Model
   const [profile, setProfile] = useState({
@@ -22,7 +22,7 @@ function Dashboard({ onLogout, user }) {
 
   // 3. Mock Data Array representing 'Appointment' Model
   const [appointments, setAppointments] = useState([
-    { id: 1, doctor: 'Dr. Sarah Jenkins (OB-GYY)', appointment_date: '2026-06-25 10:00 AM', status: 'CONFIRMED', reason_for_visit: 'Routine Second Trimester Ultrasound and Anatomy Scan' }
+    { id: 1, doctor: 'Dr. Sarah Jenkins (OB-GYN)', appointment_date: '2026-06-25 10:00 AM', status: 'CONFIRMED', reason_for_visit: 'Routine Second Trimester Ultrasound and Anatomy Scan' }
   ]);
 
   // 4. Mock Data Array representing 'ClinicalNote' Model
@@ -39,6 +39,29 @@ function Dashboard({ onLogout, user }) {
   // Doctor/Staff Interface Input Form State
   const [doctorAssessment, setDoctorAssessment] = useState('');
   const [doctorRx, setDoctorRx] = useState('');
+
+  // 🟢 LIVE ENGINE: Calculate Gestational Age Weeks from LMP
+  const calculateGestationalMetrics = () => {
+    const lmpDate = new Date(profile.last_menstrual_period_date);
+    const today = new Date('2026-06-20'); // Synchronized with current project calendar year
+    const timeDifference = today.getTime() - lmpDate.getTime();
+    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    const totalWeeks = Math.floor(daysDifference / 7);
+    const remainingDays = daysDifference % 7;
+
+    let trimester = 'First Trimester';
+    let progressPercentage = Math.min(Math.floor((totalWeeks / 40) * 100), 100);
+
+    if (totalWeeks >= 13 && totalWeeks < 27) {
+      trimester = 'Second Trimester';
+    } else if (totalWeeks >= 27) {
+      trimester = 'Third Trimester';
+    }
+
+    return { totalWeeks, remainingDays, trimester, progressPercentage };
+  };
+
+  const metrics = calculateGestationalMetrics();
 
   const handleAddLog = (e) => {
     e.preventDefault();
@@ -69,7 +92,7 @@ function Dashboard({ onLogout, user }) {
     setClinicalNotes([newNote, ...clinicalNotes]);
     setDoctorAssessment('');
     setDoctorRx('');
-    setActiveTab('clinicalNotes'); // Automatically redirect to notes viewport
+    setActiveTab('clinicalNotes');
   };
 
   return (
@@ -89,7 +112,7 @@ function Dashboard({ onLogout, user }) {
         {/* Presentation Dynamic Demonstration Switcher Panel */}
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <div style={{ backgroundColor: '#f7fafc', padding: '6px', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', gap: '5px' }}>
-            <button onClick={() => { setCurrentUserRole('PATIENT'); setActiveTab('healthLogs'); }} style={{ padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px', backgroundColor: currentUserRole === 'PATIENT' ? '#8FBC8F' : 'transparent', color: currentUserRole === 'PATIENT' ? 'white' : '#718096' }}>Patient View</button>
+            <button onClick={() => { setCurrentUserRole('PATIENT'); setActiveTab('profile'); }} style={{ padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px', backgroundColor: currentUserRole === 'PATIENT' ? '#8FBC8F' : 'transparent', color: currentUserRole === 'PATIENT' ? 'white' : '#718096' }}>Patient View</button>
             <button onClick={() => { setCurrentUserRole('STAFF'); setActiveTab('doctorConsole'); }} style={{ padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px', backgroundColor: currentUserRole === 'STAFF' ? '#4a5568' : 'transparent', color: currentUserRole === 'STAFF' ? 'white' : '#718096' }}>Doctor Console</button>
           </div>
           <button onClick={onLogout} style={{ padding: '10px 16px', backgroundColor: '#e53e3e', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px' }}>
@@ -148,7 +171,27 @@ function Dashboard({ onLogout, user }) {
         {activeTab === 'profile' && (
           <div>
             <h2 style={{ color: '#2d3748', marginTop: 0, borderBottom: '1px solid #edf2f7', paddingBottom: '10px' }}>Maternity Onboarding & Gestational Metrics</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
+            
+            {/* 🟢 NEW DYNAMIC GESTATIONAL PROGRESS COMPONENT */}
+            <div style={{ backgroundColor: '#f7fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '20px', marginBottom: '25px', display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '12px', color: '#718096', fontWeight: 'bold', textTransform: 'uppercase' }}>Current Gestational Age</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#8FBC8F', margin: '4px 0' }}>{metrics.totalWeeks} Weeks, {metrics.remainingDays} Days</div>
+                <div style={{ fontSize: '14px', color: '#4a5568', fontWeight: '600' }}>✨ {metrics.trimester}</div>
+              </div>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#718096', marginBottom: '5px', fontWeight: '600' }}>
+                  <span>Pregnancy Milestone Track</span>
+                  <span>{metrics.progressPercentage}% Complete</span>
+                </div>
+                {/* Custom CSS Progress Bar Wrapper */}
+                <div style={{ width: '100%', backgroundColor: '#e2e8f0', height: '14px', borderRadius: '10px', overflow: 'hidden' }}>
+                  <div style={{ width: `${metrics.progressPercentage}%`, backgroundColor: '#8FBC8F', height: '100%', transition: 'width 0.5s ease-in-out' }} />
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
               <div style={{ padding: '15px', backgroundColor: '#f7fafc', borderRadius: '8px', borderLeft: '4px solid #8FBC8F' }}>
                 <strong style={{ color: '#4a5568', display: 'block', fontSize: '13px', textTransform: 'uppercase' }}>Last Menstrual Period (LMP)</strong>
                 <span style={{ fontSize: '18px', fontWeight: '600', color: '#2d3748' }}>{profile.last_menstrual_period_date}</span>
@@ -208,7 +251,7 @@ function Dashboard({ onLogout, user }) {
               </div>
             </div>
 
-            {/* Input Submission Form - Only rendered when logged as PATIENT */}
+            {/* Input Submission Form */}
             {currentUserRole === 'PATIENT' && (
               <form onSubmit={handleAddLog} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', backgroundColor: '#f7fafc', padding: '20px', borderRadius: '8px', marginBottom: '25px', border: '1px solid #edf2f7' }}>
                 <div>
