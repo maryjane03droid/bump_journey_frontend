@@ -1,9 +1,20 @@
+// src/components/Footer.js
 import React from 'react';
+import { theme } from '../styles';
 
-const Footer = () => (
-  <footer style={{ marginTop: '40px', padding: '20px', textAlign: 'center', backgroundColor: '#f9f9f9' }}>
-    <p>© 2026 MaternaCare | Built for Academic Presentation</p>
-  </footer>
-);
+function Footer() {
+  return (
+    <footer style={{ 
+      padding: '20px', 
+      textAlign: 'center', 
+      backgroundColor: theme.colors.white, 
+      marginTop: 'auto',
+      borderTop: `1px solid ${theme.colors.border}`,
+      color: theme.colors.primary 
+    }}>
+      <p>&copy; 2026 Bump Journey. All rights reserved.</p>
+    </footer>
+  );
+}
 
 export default Footer;
