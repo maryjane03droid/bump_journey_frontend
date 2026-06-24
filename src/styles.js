@@ -15,6 +15,7 @@ export const theme = {
     borderRadius: '12px',
     boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
     textAlign: 'center',
+    fontFamily: 'Georgia, serif',
   },
   loginTitle: {
     color: '#1B4332',
