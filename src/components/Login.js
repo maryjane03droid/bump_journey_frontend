@@ -1,122 +1,77 @@
 import React, { useState } from 'react';
-import { authAPI } from '../services/api'; // Or use your core api instance if needed
+import { useNavigate, Link } from 'react-router-dom'; // <-- Make sure Link is imported
+import { authAPI } from '../services/api';
 import { theme } from '../styles';
 
 function Login({ onLogin }) {
-    const [isSignUp, setIsSignUp] = useState(false);
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
 
-        try {
-            if (isSignUp) {
-                // If you have a registration method in your authAPI:
-                if (authAPI.register) {
-                    await authAPI.register(username, password);
-                }
-                // Automatically log them in or switch view after signup
-                await authAPI.login(username, password);
-            } else {
-                // Standard login flow
-                await authAPI.login(username, password);
-            }
-            
-            setLoading(false);
-            onLogin({ username });
-        } catch (err) {
-            setLoading(false);
-            console.error("Authentication failed:", err);
-            
-            // Provide exact visual feedback on why it failed
-            if (err.response && err.response.status === 401) {
-                setError('Invalid username or password.');
-            } else {
-                setError('Connection failed. Check your API or database.');
-            }
-        }
-    };
+    try {
+      const data = await authAPI.login(username, password);
 
-    return (
-        <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '100vh',
-            width: '100vw',
-            // Fullscreen mother and baby background image, blended with your deep forest green theme
-            backgroundImage: `linear-gradient(rgba(27, 67, 50, 0.45), rgba(27, 67, 50, 0.45)), url('https://images.unsplash.com/photo-1555252333-9f8e92e65df9?q=80&w=1600&auto=format&fit=crop')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            boxSizing: 'border-box'
-        }}>
-            {/* Blends your explicit theme container styles and centers it perfectly */}
-            <div style={{ ...theme.loginContainer, margin: '0 20px', width: '100%', maxWidth: '400px' }}>
-                <h2 style={theme.loginTitle}>Bump Journey</h2>
-                
-                {error && (
-                    <div style={{
-                        backgroundColor: '#FFF2F2',
-                        color: '#D90429',
-                        padding: '10px',
-                        borderRadius: '6px',
-                        fontSize: '14px',
-                        marginBottom: '15px',
-                        border: '1px solid #F7D4D4',
-                        fontFamily: theme.loginContainer.fontFamily
-                    }}>
-                        {error}
-                    </div>
-                )}
+      const accessToken = data.access || data.access_token || data.token;
+      if (!accessToken) {
+        throw new Error('Login failed. Please check your username and password.');
+      }
 
-                <form onSubmit={handleSubmit}>
-                    <input 
-                        type="text" 
-                        placeholder="Username" 
-                        value={username} 
-                        onChange={(e) => setUsername(e.target.value)} 
-                        style={theme.input} 
-                        required 
-                    />
-                    <input 
-                        type="password" 
-                        placeholder="Password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)} 
-                        style={theme.input} 
-                        required 
-                    />
-                    
-                    <button 
-                        type="submit" 
-                        disabled={loading}
-                        style={{ 
-                            ...theme.loginButton,
-                            opacity: loading ? 0.7 : 1,
-                            cursor: loading ? 'not-allowed' : 'pointer'
-                        }}
-                    >
-                        {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Login')}
-                    </button>
-                </form>
+      // FIXED: Directly saving the authenticated role and username explicitly sent by Django!
+      localStorage.setItem('user_role', data.role);
+      localStorage.setItem('username', data.username);
 
-                <button 
-                    onClick={() => {
-                        setIsSignUp(!isSignUp);
-                        setError('');
-                    }} 
-                    style={theme.toggleButton}
-                >
-                    {isSignUp ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
-                </button>
-            </div>
+      onLogin();
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Unable to log in. Please try again.');
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', margin: 0, padding: 0 }}>
+      
+      {/* LEFT SIDE: Login Form */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8faf8' }}>
+        
+        <div style={{ ...theme.loginContainer, width: '100%', maxWidth: '400px', boxShadow: 'none', backgroundColor: 'transparent' }}>
+          <h2 style={{ ...theme.loginTitle, fontSize: '2.5rem', color: '#2e7d32', textAlign: 'left', marginBottom: '30px' }}>
+            Welcome Back
+          </h2>
+          
+          {error && <p style={{ color: '#e53e3e', backgroundColor: '#fff5f5', padding: '10px', borderRadius: '4px' }}>{error}</p>}
+          
+          <form onSubmit={handleSubmit}>
+            {/* Note: Ensure the username typed here perfectly matches the case used when signing up */}
+            <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} style={{...theme.input, padding: '15px'}} required />
+            <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} style={{...theme.input, padding: '15px'}} required />
+            <button type="submit" style={{ ...theme.loginButton, width: '100%', padding: '15px', borderRadius: '30px', fontSize: '1.1rem', marginTop: '10px' }}>
+              Log In
+            </button>
+          </form>
+
+          {/* Added quick link to Signup for better UX */}
+          <p style={{ marginTop: '20px', fontSize: '14px', textAlign: 'left' }}>
+            Don't have an account? <Link to="/signup" style={{ color: theme.colors.secondary, fontWeight: 'bold' }}>Sign Up</Link>
+          </p>
         </div>
-    );
+      </div>
+
+      {/* RIGHT SIDE: Related Image */}
+      <div style={{ flex: 1, position: 'relative' }}>
+        <img 
+          src="https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=2000&auto=format&fit=crop" 
+          alt="Doctor checking pregnant patient" 
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      </div>
+
+    </div>
+  );
 }
 
 export default Login;

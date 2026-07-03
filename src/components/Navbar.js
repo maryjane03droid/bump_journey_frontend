@@ -1,55 +1,47 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { theme } from '../styles';
 
-function Navbar({ onLogout, userRole }) {
-  const navLinkStyle = { 
-    color: theme.colors.primary, 
-    textDecoration: 'none', 
-    fontWeight: '600', 
-    cursor: 'pointer',
-    fontSize: '14px'
+function Navbar({ isAuthenticated, onLogout }) {
+  const navigate = useNavigate();
+
+  const handleLogoutClick = () => {
+    onLogout();
+    navigate('/');
   };
 
   return (
-    <nav style={{ 
-      padding: '20px 40px', 
-      backgroundColor: theme.colors.white, 
-      display: 'flex', 
-      justifyContent: 'space-between', 
-      alignItems: 'center', 
-      borderBottom: `1px solid ${theme.colors.border}` 
-    }}>
-      <h2 style={{ color: theme.colors.primary, margin: 0 }}>Bump Journey</h2>
-      
+    <nav style={{ backgroundColor: theme.colors.primary, padding: '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
+        <Link to="/" style={{ color: theme.colors.white, textDecoration: 'none', fontSize: '24px', fontFamily: 'Georgia, serif', fontWeight: 'bold' }}>
+          🤱 BumpJourney
+        </Link>
+      </div>
+
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-        <a href="/" style={navLinkStyle}>Home</a>
-        <a href="/about" style={navLinkStyle}>About Us</a>
-        <a href="/contact" style={navLinkStyle}>Contact Us</a>
+        <Link to="/about" style={{ color: theme.colors.border, textDecoration: 'none', fontWeight: 'bold' }}>About</Link>
+        <Link to="/contact" style={{ color: theme.colors.border, textDecoration: 'none', fontWeight: 'bold' }}>Contact</Link>
         
-        {/* Only show tracking/feedback for patients */}
-        {userRole === 'patient' && (
+        {isAuthenticated ? (
           <>
-            <a href="/track" style={navLinkStyle}>Track Pregnancy</a>
-            <a href="/feedback" style={navLinkStyle}>Clinic Feedback</a>
+            <Link to="/dashboard" style={{ color: theme.colors.white, textDecoration: 'none', fontWeight: 'bold' }}>Dashboard</Link>
+            <Link to="/tracker" style={{ color: theme.colors.white, textDecoration: 'none', fontWeight: 'bold' }}>Health Tracker</Link>
+            
+            {/* NEW PROFILE LINK ADDED HERE */}
+            <Link to="/profile" style={{ color: theme.colors.white, textDecoration: 'none', fontWeight: 'bold' }}>My Profile</Link>
+            
+            <button onClick={handleLogoutClick} style={{ backgroundColor: 'transparent', color: theme.colors.white, border: `1px solid ${theme.colors.white}`, padding: '6px 16px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" style={{ color: theme.colors.white, textDecoration: 'none', fontWeight: 'bold' }}>Log In</Link>
+            <Link to="/signup" style={{ backgroundColor: theme.colors.secondary, color: theme.colors.white, padding: '8px 16px', borderRadius: '20px', textDecoration: 'none', fontWeight: 'bold' }}>
+              Sign Up
+            </Link>
           </>
         )}
-        
-        <a href="/profile" style={navLinkStyle}>Profile</a>
-        
-        <button 
-          onClick={onLogout} 
-          style={{ 
-            backgroundColor: '#e63946', 
-            color: 'white', 
-            border: 'none', 
-            padding: '8px 16px', 
-            borderRadius: '8px', 
-            cursor: 'pointer',
-            fontWeight: 'bold'
-          }}
-        >
-          Logout
-        </button>
       </div>
     </nav>
   );

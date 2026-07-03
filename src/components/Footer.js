@@ -1,18 +1,10 @@
-// src/components/Footer.js
 import React from 'react';
 import { theme } from '../styles';
 
 function Footer() {
   return (
-    <footer style={{ 
-      padding: '20px', 
-      textAlign: 'center', 
-      backgroundColor: theme.colors.white, 
-      marginTop: 'auto',
-      borderTop: `1px solid ${theme.colors.border}`,
-      color: theme.colors.primary 
-    }}>
-      <p>&copy; 2026 Bump Journey. All rights reserved.</p>
+    <footer style={{ backgroundColor: theme.colors.primary, color: theme.colors.border, textAlign: 'center', padding: '15px', marginTop: 'auto' }}>
+      <p style={{ margin: 0 }}>© {new Date().getFullYear()} BumpJourney Maternity Management System.</p>
     </footer>
   );
 }
