@@ -46,7 +46,6 @@ export const authAPI = {
     return response.data;
   },
 
-  // FIXED: Explicitly enforcing the trailing slash for profile calls
   getProfile: async () => {
     const response = await api.get('accounts/profile/');
     return response.data;
@@ -67,6 +66,17 @@ export const clinicalAPI = {
   createNote: async (noteData) => {
     const response = await api.post('staff/notes/', noteData);
     return response.data;
+  },
+
+  // Added missing Update and Delete for Staff Notes
+  updateNote: async (id, noteData) => {
+    const response = await api.put(`staff/notes/${id}/`, noteData);
+    return response.data;
+  },
+
+  deleteNote: async (id) => {
+    const response = await api.delete(`staff/notes/${id}/`);
+    return response.data;
   }
 };
 
@@ -75,12 +85,25 @@ export const trackerAPI = {
     const response = await api.get('tracker/pregnancy-profiles/');
     return response.data;
   },
+
   getHealthLogs: async () => {
     const response = await api.get('tracker/health-logs/');
     return response.data;
   },
+
   createHealthLog: async (logData) => {
     const response = await api.post('tracker/health-logs/', logData);
+    return response.data;
+  },
+
+  // Added missing Update and Delete for Patient Health Logs
+  updateHealthLog: async (id, logData) => {
+    const response = await api.put(`tracker/health-logs/${id}/`, logData);
+    return response.data;
+  },
+
+  deleteHealthLog: async (id) => {
+    const response = await api.delete(`tracker/health-logs/${id}/`);
     return response.data;
   }
 };

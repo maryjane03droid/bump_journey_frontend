@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Components
 import Login from './components/Login';
-import Home from './components/Welcome'; // This is your new Welcome page
+import Home from './components/Welcome'; 
 import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
@@ -13,54 +13,81 @@ import Tracker from './components/Tracker';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
+// Role Dashboards
+import AdminDashboard from './components/AdminDashboard';
+import StaffDashboard from './components/StaffDashboard';
+
 function App() {
-  // Check if user is logged in by looking for the token
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
 
-  const handleLogin = () => setIsAuthenticated(true);
+  // Sync Dark Mode state at the root level on application launch
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
   
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user_role'); // Clear role on logout
-    localStorage.removeItem('username');  // Clear username on logout
+    localStorage.removeItem('user_role'); 
+    localStorage.removeItem('username');  
     setIsAuthenticated(false);
   };
 
-  // Wrapper for routes that require the user to be logged in
+  // Guard for protected endpoints
   const ProtectedRoute = ({ children }) => {
     return isAuthenticated ? children : <Navigate to="/login" />;
+  };
+
+  // Smart Redirection Mapper
+  const getDashboardRoute = () => {
+    const role = localStorage.getItem('user_role');
+    if (role === 'ADMIN') return '/admin-dashboard';
+    if (role === 'DOCTOR' || role === 'MIDWIFE' || role === 'NURSE' || role === 'STAFF') return '/staff-dashboard';
+    return '/dashboard'; 
   };
 
   return (
     <Router>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {/* Navigation */}
+        
+        {/* Pass state update handlers down if components need theme refresh triggers */}
         <Navbar onLogout={handleLogout} isAuthenticated={isAuthenticated} />
         
-        {/* Main Content Area */}
+        {/* Main Viewport Grid */}
         <div style={{ flex: '1' }}>
           <Routes>
-            {/* PUBLIC ROUTES */}
+            {/* Public Entry Points */}
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             
-            {/* AUTH ROUTES (Redirect to dashboard if already logged in) */}
-            <Route path="/login" element={!isAuthenticated ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
-            <Route path="/signup" element={!isAuthenticated ? <Signup /> : <Navigate to="/dashboard" />} />
+            {/* Gateway Authentications */}
+            <Route path="/login" element={!isAuthenticated ? <Login onLogin={handleLogin} /> : <Navigate to={getDashboardRoute()} />} />
+            <Route path="/signup" element={!isAuthenticated ? <Signup /> : <Navigate to={getDashboardRoute()} />} />
 
-            {/* PROTECTED ROUTES */}
+            {/* Guarded Patient Layouts */}
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard onLogout={handleLogout} /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/tracker" element={<ProtectedRoute><Tracker /></ProtectedRoute>} />
+            
+            {/* Guarded Clinical/Admin Layouts */}
+            <Route path="/admin-dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/staff-dashboard" element={<ProtectedRoute><StaffDashboard /></ProtectedRoute>} />
 
-            {/* FALLBACK (Catches any typos in the URL and redirects safely) */}
-            <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/"} />} />
+            {/* Catch-all Routing Strategy */}
+            <Route path="*" element={<Navigate to={isAuthenticated ? getDashboardRoute() : "/"} />} />
           </Routes>
         </div>
 
-        {/* Footer */}
         <Footer />
       </div>
     </Router>

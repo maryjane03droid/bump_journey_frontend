@@ -1,93 +1,200 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios'; 
+import React, { useState, useEffect, useCallback } from 'react';
+import { theme } from '../styles';
+import api, { clinicalAPI, trackerAPI } from '../services/api';
 
-const StaffDashboard = () => {
-    const [pendingAppointments, setPendingAppointments] = useState([]);
-    const [urgentLogs, setUrgentLogs] = useState([]);
-    const [loading, setLoading] = useState(true);
+function StaffDashboard() {
+  const username = localStorage.getItem('username') || 'Clinician';
+  const token = localStorage.getItem('access_token');
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                // Ensure your Axios interceptors are attaching the auth token
-                const appointmentsRes = await axios.get('http://localhost:8000/api/appointments/'); 
-                const logsRes = await axios.get('http://localhost:8000/api/healthlogs/');
-                
-                // Filter for action items
-                const pending = appointmentsRes.data.filter(app => app.status === 'REQUESTED');
-                const urgent = logsRes.data.filter(log => log.urgent_attention_requested === true);
+  const [appointments, setAppointments] = useState([]);
+  const [healthLogs, setHealthLogs] = useState([]);
+  const [staffNotes, setStaffNotes] = useState([]);
+  
+  // Track selected patient identity reference instead of raw stale data copies
+  const [activePatient, setActivePatient] = useState(null); // { id, username }
+  const [newClinicalNote, setNewClinicalNote] = useState('');
 
-                setPendingAppointments(pending);
-                setUrgentLogs(urgent);
-                setLoading(false);
-            } catch (error) {
-                console.error("Failed to load clinical data:", error);
-                setLoading(false);
-            }
-        };
+  const loadDashboardData = useCallback(async () => {
+    try {
+      const [aptData, logsData, notesRes] = await Promise.all([
+        clinicalAPI.getAppointments(),
+        trackerAPI.getHealthLogs(),
+        api.get('staff/notes/')
+      ]);
+      
+      setAppointments(aptData);
+      setHealthLogs(logsData);
+      setStaffNotes(notesRes.data);
+    } catch (err) {
+      console.error('Clinical portal data sync error:', err);
+    }
+  }, []);
 
-        fetchDashboardData();
-    }, []);
+  useEffect(() => {
+    if (token) loadDashboardData();
+  }, [token, loadDashboardData]);
 
-    if (loading) return <div style={{ padding: '2rem' }}>Loading clinical data...</div>;
+  // Derived State Engine: recalculates automatically on array changes
+  const activePatientLogs = activePatient 
+    ? healthLogs.filter(log => log.patient === activePatient.id) 
+    : [];
+  const activePatientNotes = activePatient 
+    ? staffNotes.filter(note => note.patient === activePatient.id) 
+    : [];
 
-    return (
-        <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', fontFamily: 'serif' }}>
-            <h1 style={{ borderBottom: '1px solid #eaeaea', paddingBottom: '1rem', color: '#2c3e50' }}>
-                Clinical Triage Dashboard
-            </h1>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '2rem' }}>
-                
-                {/* Column 1: Pending Appointment Requests */}
-                <section>
-                    <h2 style={{ color: '#34495e' }}>Pending Requests</h2>
-                    {pendingAppointments.length === 0 ? (
-                        <p style={{ color: '#7f8c8d' }}>No pending appointment requests.</p>
-                    ) : (
-                        pendingAppointments.map(app => (
-                            <div key={app.id} style={{ padding: '1.5rem', border: '1px solid #e0e0e0', marginBottom: '1rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                                <p><strong>Patient:</strong> {app.patient_username}</p>
-                                <p><strong>Reason:</strong> {app.reason || 'Not specified'}</p>
-                                <p><strong>Requested On:</strong> {new Date(app.created_at).toLocaleDateString()}</p>
-                                
-                                <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
-                                    <button style={{ padding: '0.5rem 1rem', background: '#2c3e50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                                        Schedule
-                                    </button>
-                                    <button style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#2c3e50', border: '1px solid #2c3e50', borderRadius: '4px', cursor: 'pointer' }}>
-                                        Review & Note
-                                    </button>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </section>
+  const handleApproveAndSchedule = async (appointmentId) => {
+    const scheduledDate = prompt(`Enter Scheduled Date (YYYY-MM-DD):`);
+    const scheduledTime = prompt(`Enter Scheduled Time (HH:MM):`);
 
-                {/* Column 2: Urgent Health Logs */}
-                <section>
-                    <h2 style={{ color: '#c0392b' }}>Urgent Patient Monitors</h2>
-                    {urgentLogs.length === 0 ? (
-                        <p style={{ color: '#7f8c8d' }}>All patient vitals are stable.</p>
-                    ) : (
-                        urgentLogs.map(log => (
-                            <div key={log.id} style={{ padding: '1.5rem', border: '1px solid #e74c3c', borderLeft: '6px solid #e74c3c', marginBottom: '1rem', borderRadius: '8px', backgroundColor: '#fdf3f2' }}>
-                                <p><strong>Patient:</strong> {log.patient_username}</p>
-                                <p><strong>Vitals:</strong> BP {log.blood_pressure} | Weight: {log.weight_kg}kg</p>
-                                <p><strong>Symptoms:</strong> {log.symptoms}</p>
-                                <p><strong>Logged On:</strong> {new Date(log.recorded_at).toLocaleDateString()}</p>
-                                
-                                <button style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                                    Intervene (Schedule Appointment)
-                                </button>
-                            </div>
-                        ))
-                    )}
-                </section>
+    if (!scheduledDate || !scheduledTime) return;
 
-            </div>
+    try {
+      const response = await api.patch(`staff/appointments/${appointmentId}/`, { 
+        date: scheduledDate, 
+        time: scheduledTime, 
+        status: 'SCHEDULED' 
+      });
+
+      if (response.status === 200 || response.status === 204) {
+        alert('Appointment successfully scheduled and assigned.');
+        loadDashboardData();
+      }
+    } catch (err) {
+      console.error('Failed to schedule appointment:', err);
+      alert('Error scheduling appointment.');
+    }
+  };
+
+  const handleAddNoteSubmit = async (e) => {
+    e.preventDefault();
+    if (!newClinicalNote.trim() || !activePatient) return;
+
+    try {
+      await clinicalAPI.createNote({ 
+        patient: activePatient.id, 
+        notes: newClinicalNote 
+      });
+
+      alert('Clinical note signed and saved to chart.');
+      setNewClinicalNote('');
+      loadDashboardData(); 
+    } catch (err) {
+      console.error('Failed to save chart note:', err);
+    }
+  };
+
+  return (
+    <div style={{ backgroundColor: theme.colors.background, minHeight: '85vh', padding: '40px 20px', fontFamily: 'sans-serif', color: 'var(--text-color)' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        
+        {/* Header Layout */}
+        <div style={{ borderBottom: `2px solid var(--border-color)`, paddingBottom: '20px', marginBottom: '30px' }}>
+          <h1 style={{ color: theme.colors.primary, margin: 0, fontFamily: 'Georgia, serif' }}>
+            🩺 Clinical Portal: Welcome, {username}
+          </h1>
         </div>
-    );
-};
+
+        <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
+          
+          {/* Triage Queue Left Panel */}
+          <div style={{ flex: '1 1 450px' }}>
+            <h3 style={{ color: theme.colors.primary }}>📂 Triage & Appointment Roster</h3>
+            {appointments.length === 0 ? (
+              <p style={{ color: 'var(--text-muted)' }}>No active cases in queue.</p>
+            ) : appointments.map(apt => (
+              <div key={apt.id} style={{ backgroundColor: 'var(--card-bg)', padding: '20px', borderRadius: '8px', borderLeft: `6px solid ${apt.status === 'REQUESTED' ? '#e53e3e' : 'var(--secondary-color)'}`, marginBottom: '15px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <strong style={{ fontSize: '18px' }}>{apt.patient_username}</strong>
+                  <span style={{ backgroundColor: apt.status === 'REQUESTED' ? 'rgba(229, 62, 62, 0.1)' : 'rgba(47, 133, 90, 0.1)', color: apt.status === 'REQUESTED' ? '#e53e3e' : '#2f855a', padding: '4px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 'bold' }}>
+                    {apt.status}
+                  </span>
+                </div>
+                <p style={{ margin: '8px 0', fontSize: '14px' }}>📋 <strong>Reason:</strong> {apt.reason || 'Not specified'}</p>
+                {apt.doctor_username && <p style={{ margin: '4px 0', fontSize: '14px', color: 'var(--text-muted)' }}>👨‍⚕️ <strong>Assigned to:</strong> {apt.doctor_username}</p>}
+                
+                <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+                  <button onClick={() => setActivePatient({ id: apt.patient, username: apt.patient_username })} style={{ padding: '6px 12px', backgroundColor: 'transparent', color: theme.colors.primary, border: `1px solid ${theme.colors.primary}`, borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>
+                    View Full Clinical Profile
+                  </button>
+                  {apt.status === 'REQUESTED' && (
+                    <button onClick={() => handleApproveAndSchedule(apt.id)} style={{ padding: '6px 12px', backgroundColor: theme.colors.secondary, color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>
+                      Approve & Schedule
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Chart Workspace Right Panel */}
+          <div style={{ flex: '2 1 600px' }}>
+            {activePatient ? (
+              <div style={{ backgroundColor: 'var(--card-bg)', padding: '30px', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--border-color)', paddingBottom: '15px', marginBottom: '20px' }}>
+                  <h2 style={{ color: theme.colors.primary, margin: 0 }}>📋 Chart: {activePatient.username}</h2>
+                  <button onClick={() => setActivePatient(null)} style={{ border: 'none', backgroundColor: 'var(--border-color)', color: 'var(--text-color)', padding: '5px 12px', borderRadius: '4px', cursor: 'pointer' }}>Close Chart</button>
+                </div>
+
+                {/* Form Notes Signature Entry */}
+                <form onSubmit={handleAddNoteSubmit} style={{ marginBottom: '25px' }}>
+                  <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px', fontSize: '14px' }}>Add Clinical Note (Attending Signature)</label>
+                  <textarea value={newClinicalNote} onChange={(e) => setNewClinicalNote(e.target.value)} style={{ ...theme.input, height: '80px', marginBottom: '10px' }} required />
+                  <button type="submit" style={{ ...theme.loginButton, width: 'auto', padding: '8px 20px' }}>Sign & Save Note</button>
+                </form>
+
+                {/* Historical Metrics Table */}
+                <h4 style={{ color: theme.colors.primary, marginBottom: '10px' }}>📉 Vitals Logs (from Tracker App)</h4>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '25px', fontSize: '14px' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: 'var(--input-bg)', textAlign: 'left', borderBottom: '2px solid var(--border-color)' }}>
+                        <th style={{ padding: '8px' }}>Date</th>
+                        <th style={{ padding: '8px' }}>Weight</th>
+                        <th style={{ padding: '8px' }}>BP</th>
+                        <th style={{ padding: '8px' }}>Kicks</th>
+                        <th style={{ padding: '8px' }}>Symptoms</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {activePatientLogs.length > 0 ? activePatientLogs.map((log) => (
+                        <tr key={log.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                          <td style={{ padding: '8px' }}>{new Date(log.recorded_at || log.created_at).toLocaleDateString()}</td>
+                          <td style={{ padding: '8px' }}>{log.weight_kg || log.weight} kg</td>
+                          <td style={{ padding: '8px' }}>{log.blood_pressure}</td>
+                          <td style={{ padding: '8px' }}>{log.fetal_kick_count || log.kick_count || '-'}</td>
+                          <td style={{ padding: '8px', color: log.urgent_attention_requested ? '#e53e3e' : 'inherit' }}>{log.symptoms}</td>
+                        </tr>
+                      )) : (
+                        <tr><td colSpan="5" style={{ padding: '8px', textAlign: 'center', color: 'var(--text-muted)' }}>No metrics logged yet.</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Historical Attending Notes */}
+                <h4 style={{ color: theme.colors.primary, marginBottom: '10px' }}>📝 Attending Notes History</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {activePatientNotes.length > 0 ? activePatientNotes.map((note) => (
+                    <div key={note.id} style={{ backgroundColor: 'var(--input-bg)', padding: '12px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                      <p style={{ margin: '0 0 5px 0', fontSize: '14px' }}><em>"{note.notes}"</em></p>
+                      <small style={{ color: 'var(--text-muted)' }}>Signed: <strong>{note.author_username}</strong> on {new Date(note.created_at).toLocaleDateString()}</small>
+                    </div>
+                  )) : (
+                    <p style={{ color: 'var(--text-muted)' }}>No historical profile annotations exist.</p>
+                  )}
+                </div>
+
+              </div>
+            ) : (
+              <div style={{ border: '2px dashed var(--border-color)', padding: '40px', textAlign: 'center', borderRadius: '12px', color: 'var(--text-muted)', marginTop: '45px' }}>
+                Select a patient file to review complete metrics history.
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default StaffDashboard;

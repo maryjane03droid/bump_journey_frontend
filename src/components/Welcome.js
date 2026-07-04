@@ -1,91 +1,134 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { theme } from '../styles';
+// Importing specific, professional icons
+import { FaChartPie, FaHeartbeat, FaUserMd } from 'react-icons/fa';
+
+const FEATURE_CARDS = [
+  {
+    id: 'dashboard',
+    icon: <FaChartPie size={30} color="#2e7d32" />, 
+    title: 'Personal Dashboard',
+    description: 'Access your personalized medical insights, upcoming appointments, and daily pregnancy tips.',
+    path: '/dashboard'
+  },
+  {
+    id: 'tracker',
+    icon: <FaHeartbeat size={30} color="#2e7d32" />,
+    title: 'Health Tracker',
+    description: 'Log your weight, blood pressure, symptoms, and baby movements to share with your medical team.',
+    path: '/tracker'
+  },
+  {
+    id: 'profile',
+    icon: <FaUserMd size={30} color="#2e7d32" />,
+    title: 'My Profile',
+    description: 'Update your emergency contacts, view your auto-calculated Due Date, and manage account details.',
+    path: '/profile'
+  }
+];
 
 function Welcome() {
+  const navigate = useNavigate();
+  
+  const token = localStorage.getItem('access_token');
+  const isLoggedIn = !!token;
+  const userRole = localStorage.getItem('user_role') || 'PATIENT';
+  const isStaff = ['DOCTOR', 'MIDWIFE', 'NURSE'].includes(userRole);
+
+  const handleFeatureClick = (protectedPath) => {
+    if (isLoggedIn) {
+      navigate(protectedPath);
+    } else {
+      navigate('/login', { state: { from: protectedPath, message: 'Please sign in to access this feature.' } });
+    }
+  };
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', margin: 0, padding: 0 }}>
+    // Main container: Flexbox handles the split screen
+    <div style={{ display: 'flex', minHeight: '100vh', flexWrap: 'wrap', backgroundColor: '#f8faf8', fontFamily: 'sans-serif' }}>
       
-      {/* LEFT SIDE: Information & Call to Action */}
+      {/* LEFT SIDE: Image Container */}
       <div style={{ 
-        flex: 1, 
+        flex: '1 1 40%', 
+        minHeight: '400px',
+        backgroundImage: 'url("https://images.unsplash.com/photo-1531983412531-1f49a365ffed?q=80&w=2000&auto=format&fit=crop")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative'
+      }}>
+        {/* Optional soft green overlay to make the image match the theme perfectly */}
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(46, 125, 50, 0.2)' }}></div>
+      </div>
+
+      {/* RIGHT SIDE: Content Container */}
+      <div style={{ 
+        flex: '1 1 60%', 
+        padding: '5% 8%', 
         display: 'flex', 
         flexDirection: 'column', 
-        justifyContent: 'center', 
-        padding: '0 8%', 
-        backgroundColor: '#f8faf8' // Very soft green/white tint
+        justifyContent: 'center' 
       }}>
-        <h1 style={{ 
-          fontSize: '3.5rem', 
-          color: '#2e7d32', // Deep olive/forest green
-          marginBottom: '20px',
-          fontWeight: '800',
-          lineHeight: '1.2'
-        }}>
-          Welcome to <br />Bump Journey.
-        </h1>
         
-        <p style={{ 
-          fontSize: '1.2rem', 
-          color: '#555', 
-          lineHeight: '1.6', 
-          marginBottom: '40px',
-          maxWidth: '500px'
-        }}>
-          Your complete digital companion for a healthy and joyful pregnancy. 
-          Track your milestones, seamlessly connect with your healthcare professionals, 
-          and prepare for your little one's arrival—all in one secure place.
+        {/* Header Text */}
+        <h1 style={{ fontSize: '3.5rem', marginBottom: '15px', color: '#1b4332', fontFamily: 'Georgia, serif' }}>
+          Welcome to BumpJourney
+        </h1>
+        <p style={{ fontSize: '1.2rem', color: '#4a5568', marginBottom: '40px', lineHeight: '1.6', maxWidth: '600px' }}>
+          Your premium digital companion for a healthy, informed, and beautiful pregnancy. Connect with medical professionals and track your journey every step of the way.
         </p>
         
-        <div style={{ display: 'flex', gap: '20px' }}>
-          {/* Primary Button */}
-          <Link to="/signup" style={{
-            backgroundColor: '#2e7d32',
-            color: 'white',
-            padding: '14px 28px',
-            borderRadius: '30px',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-            fontSize: '1rem',
-            textAlign: 'center',
-            boxShadow: '0 4px 6px rgba(46, 125, 50, 0.2)',
-            transition: 'transform 0.2s'
-          }}>
-            Create an Account
-          </Link>
-          
-          {/* Secondary Button */}
-          <Link to="/login" style={{
-            backgroundColor: 'transparent',
-            color: '#2e7d32',
-            padding: '14px 28px',
-            borderRadius: '30px',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-            fontSize: '1rem',
-            textAlign: 'center',
-            border: '2px solid #2e7d32',
-            transition: 'background-color 0.2s'
-          }}>
-            Log In
-          </Link>
+        {/* Call to Action Buttons */}
+        <div style={{ display: 'flex', gap: '15px', marginBottom: '50px', flexWrap: 'wrap' }}>
+          {!isLoggedIn ? (
+            <>
+              <button 
+                onClick={() => navigate('/signup')} 
+                style={{ ...theme.loginButton, padding: '15px 40px', fontSize: '1.1rem', borderRadius: '30px', backgroundColor: '#2e7d32', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>
+                Get Started
+              </button>
+              <button 
+                onClick={() => navigate('/login')} 
+                style={{ ...theme.loginButton, padding: '15px 40px', fontSize: '1.1rem', borderRadius: '30px', backgroundColor: 'transparent', color: '#2e7d32', border: '2px solid #2e7d32', cursor: 'pointer', fontWeight: 'bold' }}>
+                Log In
+              </button>
+            </>
+          ) : (
+            <button 
+              onClick={() => navigate('/dashboard')} 
+              style={{ ...theme.loginButton, padding: '15px 40px', fontSize: '1.1rem', borderRadius: '30px', backgroundColor: '#2e7d32', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>
+              Go to My {isStaff ? 'Clinical Portal' : 'Dashboard'}
+            </button>
+          )}
         </div>
-      </div>
 
-      {/* RIGHT SIDE: Full Height Image */}
-      <div style={{ flex: 1, position: 'relative' }}>
-        <img 
-          src="https://images.unsplash.com/photo-1581007871115-f14bc016e0a4?q=80&w=2000&auto=format&fit=crop" 
-          alt="Happy pregnant family" 
-          style={{ 
-            width: '100%', 
-            height: '100%', 
-            objectFit: 'cover', // Ensures the image fills the space beautifully without stretching
-            objectPosition: 'center'
-          }}
-        />
-      </div>
+        {/* Feature Cards Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+          {FEATURE_CARDS.map((card) => (
+            <div 
+              key={card.id}
+              onClick={() => handleFeatureClick(card.path)}
+              style={{ 
+                backgroundColor: 'white', 
+                padding: '25px', 
+                borderRadius: '12px', 
+                boxShadow: '0 4px 15px rgba(0,0,0,0.05)', 
+                cursor: 'pointer',
+                borderTop: '4px solid #2e7d32'
+              }}
+            >
+              <div style={{ marginBottom: '15px' }}>{card.icon}</div>
+              <h3 style={{ color: '#1b4332', marginBottom: '10px', fontSize: '1.3rem', fontFamily: 'Georgia, serif' }}>
+                {card.title}
+              </h3>
+              <p style={{ color: '#718096', lineHeight: '1.5', fontSize: '14px', margin: 0 }}>
+                {card.description}
+              </p>
+            </div>
+          ))}
+        </div>
 
+      </div>
     </div>
   );
 }
