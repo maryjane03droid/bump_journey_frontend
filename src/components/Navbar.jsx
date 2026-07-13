@@ -20,12 +20,13 @@ export default function Navbar() {
 
   const patientLinks = [
     { to: '/patient/dashboard', label: 'Dashboard' },
-    { to: '/patient/profile', label: 'Profile' },
-    { to: '/patient/tracker', label: 'Vitals' },
-    { to: '/patient/appointments', label: 'Appointments' },
-    { to: '/patient/audit-trail', label: 'Audit Trail' },
-    { to: '/about', label: 'About' },
-    { to: '/contact', label: 'Contact' },
+  { to: '/patient/profile', label: 'Profile' },
+  { to: '/patient/tracker', label: 'Vitals' },
+  { to: '/patient/appointments', label: 'Appointments' },
+  { to: '/pregnancy-tips', label: 'Tips' },
+  { to: '/shop', label: 'Shop' },
+  { to: '/patient/audit-trail', label: 'Audit Trail' },
+  { to: '/contact', label: 'Contact' },
   ];
 
   const staffLinks = [

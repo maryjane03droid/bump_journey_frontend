@@ -5,18 +5,102 @@ import { toast } from 'react-toastify';
 import { FiShoppingCart, FiStar, FiLock, FiPlus } from 'react-icons/fi';
 
 const PRODUCTS = [
-  { id: 1, name: 'Maternity Support Belt', price: 1500, rating: 4.5, image: '🤰', description: 'Adjustable belly band for back support during pregnancy.' },
-  { id: 2, name: 'Baby Diaper Pack (50pcs)', price: 1200, rating: 4.8, image: '👶', description: 'Ultra-soft, hypoallergenic diapers for newborns.' },
-  { id: 3, name: 'Organic Baby Oil', price: 650, rating: 4.6, image: '🧴', description: 'Natural moisturizing oil for delicate baby skin.' },
-  { id: 4, name: 'Nursing Pillow', price: 2200, rating: 4.7, image: '🛋️', description: 'Ergonomic breastfeeding support pillow.' },
-  { id: 5, name: 'Baby Blanket Set', price: 1800, rating: 4.4, image: '🧸', description: 'Soft cotton blankets in 3 adorable colors.' },
-  { id: 6, name: 'Pregnancy Pillow', price: 3500, rating: 4.9, image: '💤', description: 'Full-body pillow for comfortable sleep in all trimesters.' },
-  { id: 7, name: 'Feeding Bottle Set (3pcs)', price: 950, rating: 4.3, image: '🍼', description: 'Anti-colic bottles with natural-feel nipples.' },
-  { id: 8, name: 'Hospital Bag Kit', price: 4500, rating: 4.8, image: '👜', description: 'Everything you need packed and ready for delivery day.' },
-  { id: 9, name: 'Stretch Mark Cream', price: 800, rating: 4.2, image: '✨', description: 'Cocoa butter formula to prevent and reduce stretch marks.' },
-  { id: 10, name: 'Baby Clothes Bundle', price: 2800, rating: 4.6, image: '👕', description: '10-piece newborn essentials set (0-3 months).' },
-  { id: 11, name: 'Prenatal Vitamins (60 tabs)', price: 1100, rating: 4.7, image: '💊', description: 'Folic acid, iron, and DHA for mother and baby.' },
-  { id: 12, name: 'Nursing Pads (30pcs)', price: 450, rating: 4.5, image: '🩹', description: 'Disposable, ultra-absorbent breast pads.' },
+  { 
+    id: 1, 
+    name: 'Maternity Support Belt', 
+    price: 1500, 
+    rating: 4.5, 
+    image: 'public/images/maternity-belt.jpg', 
+    description: 'Adjustable belly band for back support during pregnancy.' 
+  },
+  { 
+    id: 2, 
+    name: 'Baby Diaper Pack (50pcs)', 
+    price: 1200, 
+    rating: 4.8, 
+    image: 'public/images/diaper-pack.jpg', 
+    description: 'Ultra-soft, hypoallergenic diapers for newborns.' 
+  },
+  { 
+    id: 3, 
+    name: 'Organic Baby Oil', 
+    price: 650, 
+    rating: 4.6, 
+    image: 'public/images/baby-oil.jpg', 
+    description: 'Natural moisturizing oil for delicate baby skin.' 
+  },
+  { 
+    id: 4, 
+    name: 'Nursing Pillow', 
+    price: 2200, 
+    rating: 4.7, 
+    image: 'public/images/nursing-pillow.jpg', 
+    description: 'Ergonomic breastfeeding support pillow.' 
+  },
+  { 
+    id: 5, 
+    name: 'Baby Blanket Set', 
+    price: 1800, 
+    rating: 4.4, 
+    image: 'public/images/baby-blanket.jpg', 
+    description: 'Soft cotton blankets in 3 adorable colors.' 
+  },
+  { 
+    id: 6, 
+    name: 'Pregnancy Pillow', 
+    price: 3500, 
+    rating: 4.9, 
+    image: 'public/images/pregnancy-pillow.jpg', 
+    description: 'Full-body pillow for comfortable sleep in all trimesters.' 
+  },
+  { 
+    id: 7, 
+    name: 'Feeding Bottle Set (3pcs)', 
+    price: 950, 
+    rating: 4.3, 
+    image: 'public/images/bottle-set.jpg', 
+    description: 'Anti-colic bottles with natural-feel nipples.' 
+  },
+  { 
+    id: 8, 
+    name: 'Hospital Bag Kit', 
+    price: 4500, 
+    rating: 4.8, 
+    image: 'public/images/hospital-bag.jpg', 
+    description: 'Everything you need packed and ready for delivery day.' 
+  },
+  { 
+    id: 9, 
+    name: 'Stretch Mark Cream', 
+    price: 800, 
+    rating: 4.2, 
+    image: 'public/images/stretch-mark-cream.jpg', 
+    description: 'Cocoa butter formula to prevent and reduce stretch marks.' 
+  },
+  { 
+    id: 10, 
+    name: 'Baby Clothes Bundle', 
+    price: 2800, 
+    rating: 4.6, 
+    image: 'public/images/baby-clothes.jpg', 
+    description: '10-piece newborn essentials set (0-3 months).' 
+  },
+  { 
+    id: 11, 
+    name: 'Prenatal Vitamins (60 tabs)', 
+    price: 1100, 
+    rating: 4.7, 
+    image: 'public/images/prenatal-vitamins.jpg', 
+    description: 'Folic acid, iron, and DHA for mother and baby.' 
+  },
+  { 
+    id: 12, 
+    name: 'Nursing Pads (30pcs)', 
+    price: 450, 
+    rating: 4.5, 
+    image: 'public/images/nursing-pads.jpg', 
+    description: 'Disposable, ultra-absorbent breast pads.' 
+  }
 ];
 
 export default function Shop() {
@@ -96,7 +180,7 @@ export default function Shop() {
             <div key={product.id} className="bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden hover:shadow-md hover:border-[#8FBC8F] transition-all duration-300">
               {/* Product Image Placeholder */}
               <div className="h-40 bg-[#f0f7f0] flex items-center justify-center text-5xl">
-                {product.image}
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
               </div>
 
               <div className="p-5">
