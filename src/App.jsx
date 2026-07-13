@@ -22,12 +22,12 @@ import PatientAppointments from './components/patient/Appointments';
 import AuditTrail from './components/patient/AuditTrail';
 import Cart from './components/patient/Cart';
 
-import StaffDashboard from './components/staff/Dashboard';
+import StaffDashboard from './components/staff/StaffDashboard';
 import StaffAppointments from './components/staff/Appointments';
 import Referrals from './components/staff/Referrals';
 
-import AdminDashboard from './components/admin/Dashboard';
-import AdminUsers from './components/admin/Users';
+import AdminDashboard from './components/admin/AdminDashboard';
+import AdminUsers from './components/admin/User';
 import AdminCareers from './components/admin/CareerApplications';
 import AdminMessages from './components/admin/Messages';
 

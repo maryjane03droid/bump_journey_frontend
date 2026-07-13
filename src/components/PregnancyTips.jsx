@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import { FiPlay, FiLock, FiActivity, FiCoffee, FiBook, FiSmile, FiHelpCircle } from 'react-icons/fi';
 
 const EXERCISE_TIPS = [
-  { title: 'Prenatal Yoga', description: 'Gentle stretches to ease back pain and improve flexibility.', video: 'https://www.youtube.com/watch?v=example1', weeks: 'All trimesters' },
-  { title: 'Walking Routine', description: '30-minute daily walks to boost circulation and mood.', video: 'https://www.youtube.com/watch?v=example2', weeks: 'All trimesters' },
-  { title: 'Pelvic Floor Exercises', description: 'Kegels to strengthen muscles for delivery and recovery.', video: 'https://www.youtube.com/watch?v=example3', weeks: 'Week 12+' },
-  { title: 'Swimming', description: 'Low-impact full-body workout that reduces swelling.', video: 'https://www.youtube.com/watch?v=example4', weeks: 'All trimesters' },
-  { title: 'Prenatal Pilates', description: 'Core stability exercises adapted for pregnancy.', video: 'https://www.youtube.com/watch?v=example5', weeks: 'Week 14+' },
-  { title: 'Deep Breathing', description: 'Relaxation techniques to reduce stress and prepare for labor.', video: 'https://www.youtube.com/watch?v=example6', weeks: 'All trimesters' },
+  { title: 'Prenatal Yoga', description: 'Gentle stretches to ease back pain and improve flexibility.', video: 'https://www.youtube.com/watch?v=_NP6u3TWlBE', weeks: 'All trimesters' },
+  { title: 'Walking Routine', description: '15-minute prenatal walk and tone, safe for all trimesters.', video: 'https://www.youtube.com/watch?v=QxBm9QhbOgM', weeks: 'All trimesters' },
+  { title: 'Pelvic Floor Exercises', description: 'Kegels and core routine to prepare for easier delivery.', video: 'https://www.youtube.com/watch?v=Ilg-gQY2Rxc', weeks: 'Week 12+' },
+  { title: 'Full Body Workout', description: '30-min no-equipment pregnancy workout at home.', video: 'https://www.youtube.com/watch?v=hXuDYMORye0', weeks: 'All trimesters' },
+  { title: 'Prenatal Pilates', description: 'Core stability and hip mobility for labor prep.', video: 'https://www.youtube.com/watch?v=UB6We_4fLF8', weeks: 'Week 14+' },
+  { title: 'Deep Breathing & Stretching', description: 'Ease pelvic stiffness and tailbone pain with gentle yoga.', video: 'https://www.youtube.com/watch?v=LFngH78lyvI', weeks: 'All trimesters' },
 ];
 
 const DIET_TIPS = [

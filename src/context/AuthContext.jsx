@@ -50,20 +50,28 @@ export function AuthProvider({ children }) {
 
   const getDashboardRoute = () => {
     if (!user) return '/';
-    const role = user.role;
+    
+    // FIX 1: Added optional chaining and toUpperCase() to prevent crashes from lowercase database roles
+    const role = user?.role?.toUpperCase(); 
+    
     if (role === 'ADMIN') return '/admin/dashboard';
     if (['DOCTOR', 'PEDIATRICIAN', 'NURSE', 'MIDWIFE', 'NUTRITIONIST', 'LAB_TECHNICIAN', 'THERAPIST'].includes(role)) {
       return '/staff/dashboard';
     }
-    return '/patient/dashboard';
+    if (role === 'PATIENT') return '/patient/dashboard';
+    
+    // FIX 2: Replaced '/patient/dashboard' with '/' as the default fallback to stop the infinite redirect loop
+    return '/'; 
   };
 
   const isAuthenticated = !!user;
-  const isPatient = user?.role === 'PATIENT';
-  const isPrimaryStaff = ['DOCTOR', 'PEDIATRICIAN', 'NURSE'].includes(user?.role);
-  const isSpecialistStaff = ['MIDWIFE', 'NUTRITIONIST', 'LAB_TECHNICIAN', 'THERAPIST'].includes(user?.role);
+  
+  // FIX 3: Added toUpperCase() to the boolean checks to match your strict uppercase strings
+  const isPatient = user?.role?.toUpperCase() === 'PATIENT';
+  const isPrimaryStaff = ['DOCTOR', 'PEDIATRICIAN', 'NURSE'].includes(user?.role?.toUpperCase());
+  const isSpecialistStaff = ['MIDWIFE', 'NUTRITIONIST', 'LAB_TECHNICIAN', 'THERAPIST'].includes(user?.role?.toUpperCase());
   const isAnyStaff = isPrimaryStaff || isSpecialistStaff;
-  const isAdmin = user?.role === 'ADMIN';
+  const isAdmin = user?.role?.toUpperCase() === 'ADMIN';
 
   if (loading) return null;
 

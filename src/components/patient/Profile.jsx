@@ -69,10 +69,12 @@ export default function Profile() {
     setSaving(true);
 
     try {
+      // FIX 1: Added patient ID to the payload to satisfy Django relations
       const payload = {
         ...form,
         age: parseInt(form.age),
         current_week: parseInt(form.current_week),
+        patient: user.userId, 
       };
 
       if (profile) {
@@ -86,10 +88,14 @@ export default function Profile() {
       setEditing(false);
       fetchProfile();
     } catch (error) {
+      // FIX 2: Upgraded error handling to show exactly which field is failing
       const data = error.response?.data;
-      if (data) {
+      if (data && typeof data === 'object') {
+        const firstKey = Object.keys(data)[0];
         const firstError = Object.values(data).flat()[0];
-        toast.error(firstError || 'Failed to save profile.');
+        const formattedKey = firstKey.charAt(0).toUpperCase() + firstKey.slice(1);
+        
+        toast.error(`${formattedKey}: ${firstError}`);
       } else {
         toast.error('Something went wrong.');
       }
@@ -106,97 +112,102 @@ export default function Profile() {
     );
   }
 
-  // Show form if no profile exists or editing
+  const inputStyles = "w-full px-4 py-2.5 rounded-xl border border-[#a5d6a7] text-sm focus:outline-none focus:border-[#2e7d32] focus:ring-2 focus:ring-[#2e7d32]/20 transition-all bg-[#fafdfa]";
+
   if (!profile || editing) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-2xl font-bold text-[#2d3748] mb-6" style={{ fontFamily: 'Poppins, sans-serif' }}>
           {profile ? 'Edit Profile' : 'Create Your Profile'}
         </h1>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-[#e2e8f0] p-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Full Name *</label>
-              <input type="text" name="full_name" value={form.full_name} onChange={handleChange} required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Age *</label>
-              <input type="number" name="age" value={form.age} onChange={handleChange} required min="14" max="55"
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Phone *</label>
-              <input type="tel" name="phone" value={form.phone} onChange={handleChange} required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30" placeholder="0712 345 678" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Address *</label>
-              <input type="text" name="address" value={form.address} onChange={handleChange} required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Emergency Contact Name *</label>
-              <input type="text" name="emergency_contact_name" value={form.emergency_contact_name} onChange={handleChange} required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Emergency Contact Phone *</label>
-              <input type="tel" name="emergency_contact_phone" value={form.emergency_contact_phone} onChange={handleChange} required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Last Menstrual Period Date *</label>
-              <input type="date" name="last_menstrual_period_date" value={form.last_menstrual_period_date} onChange={handleChange} required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Current Week of Pregnancy *</label>
-              <input type="number" name="current_week" value={form.current_week} onChange={handleChange} required min="1" max="42"
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Blood Group *</label>
-              <select name="blood_group" value={form.blood_group} onChange={handleChange} required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30">
-                <option value="">Select</option>
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
-              </select>
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-[#e2e8f0] p-8 shadow-sm">
+          
+          {/* SECTION 1: Personal Information */}
+          <div className="mb-10">
+            <h3 className="text-lg font-semibold text-[#2e7d32] mb-5 border-b border-[#e2e8f0] pb-2">
+              Personal Information
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Full Name *</label>
+                <input type="text" name="full_name" value={form.full_name} onChange={handleChange} required className={inputStyles} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Age *</label>
+                <input type="number" name="age" value={form.age} onChange={handleChange} required min="14" max="55" className={inputStyles} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Phone *</label>
+                <input type="tel" name="phone" value={form.phone} onChange={handleChange} required className={inputStyles} placeholder="+254 712 345 678" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Address *</label>
+                <input type="text" name="address" value={form.address} onChange={handleChange} required className={inputStyles} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Emergency Contact Name *</label>
+                <input type="text" name="emergency_contact_name" value={form.emergency_contact_name} onChange={handleChange} required className={inputStyles} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Emergency Contact Phone *</label>
+                <input type="tel" name="emergency_contact_phone" value={form.emergency_contact_phone} onChange={handleChange} required className={inputStyles} />
+              </div>
             </div>
           </div>
 
-          <div className="mt-5 space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Existing Conditions (optional)</label>
-              <textarea name="existing_conditions" value={form.existing_conditions} onChange={handleChange} rows={2}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 resize-none"
-                placeholder="e.g. diabetes, hypertension..." />
+          {/* SECTION 2: Medical & Pregnancy Details */}
+          <div>
+            <h3 className="text-lg font-semibold text-[#2e7d32] mb-5 border-b border-[#e2e8f0] pb-2">
+              Pregnancy & Medical Details
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Last Menstrual Period Date *</label>
+                <input type="date" name="last_menstrual_period_date" value={form.last_menstrual_period_date} onChange={handleChange} required className={inputStyles} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Current Week of Pregnancy *</label>
+                <input type="number" name="current_week" value={form.current_week} onChange={handleChange} required min="1" max="42" className={inputStyles} />
+              </div>
+              <div className="sm:col-span-2 md:col-span-1">
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Blood Group *</label>
+                <select name="blood_group" value={form.blood_group} onChange={handleChange} required className={inputStyles}>
+                  <option value="">Select</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Allergies (optional)</label>
-              <textarea name="allergies" value={form.allergies} onChange={handleChange} rows={2}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 resize-none"
-                placeholder="e.g. penicillin, peanuts..." />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#2d3748] mb-1">Medical History Notes (optional)</label>
-              <textarea name="medical_history_notes" value={form.medical_history_notes} onChange={handleChange} rows={2}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 resize-none"
-                placeholder="Any relevant medical history..." />
+
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Existing Conditions (optional)</label>
+                <textarea name="existing_conditions" value={form.existing_conditions} onChange={handleChange} rows={2}
+                  className={`${inputStyles} resize-none`} placeholder="e.g. diabetes, hypertension..." />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Allergies (optional)</label>
+                <textarea name="allergies" value={form.allergies} onChange={handleChange} rows={2}
+                  className={`${inputStyles} resize-none`} placeholder="e.g. penicillin, peanuts..." />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2d3748] mb-1">Medical History Notes (optional)</label>
+                <textarea name="medical_history_notes" value={form.medical_history_notes} onChange={handleChange} rows={2}
+                  className={`${inputStyles} resize-none`} placeholder="Any relevant medical history..." />
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-3 mt-8">
+          <div className="flex gap-3 mt-10">
             <button type="submit" disabled={saving}
-              className="bg-[#2e7d32] text-white px-8 py-3 rounded-xl font-semibold text-sm flex items-center gap-2 hover:bg-[#256d2b] disabled:opacity-60 transition-colors">
+              className="bg-[#2e7d32] text-white px-8 py-3 rounded-xl font-semibold text-sm flex items-center gap-2 hover:bg-[#256d2b] disabled:opacity-60 transition-colors shadow-sm">
               {saving ? 'Saving...' : <><FiSave size={16} /> {profile ? 'Update Profile' : 'Create Profile'}</>}
             </button>
             {profile && (
@@ -211,7 +222,6 @@ export default function Profile() {
     );
   }
 
-  // Show profile view
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -219,15 +229,14 @@ export default function Profile() {
           My Profile
         </h1>
         <button onClick={() => setEditing(true)}
-          className="flex items-center gap-2 bg-[#2e7d32] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#256d2b] transition-colors">
+          className="flex items-center gap-2 bg-[#2e7d32] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#256d2b] transition-colors shadow-sm">
           <FiEdit2 size={16} />
           Edit
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-[#e2e8f0] p-8">
-        {/* Patient ID */}
-        <div className="mb-6 p-4 bg-[#f0f7f0] rounded-xl">
+      <div className="bg-white rounded-2xl border border-[#e2e8f0] p-8 shadow-sm">
+        <div className="mb-6 p-4 bg-[#f0f7f0] rounded-xl border border-[#a5d6a7]">
           <p className="text-xs text-[#718096] uppercase tracking-wider font-medium">Patient ID</p>
           <p className="text-sm font-mono font-semibold text-[#2e7d32] mt-1">{user.userId}</p>
         </div>
