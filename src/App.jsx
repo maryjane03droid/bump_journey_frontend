@@ -30,7 +30,7 @@ import AdminDashboard from './components/admin/AdminDashboard';
 import AdminUsers from './components/admin/User';
 import AdminCareers from './components/admin/CareerApplications';
 import AdminMessages from './components/admin/Messages';
-
+import ApplicationStatus from './components/ApplicationStatus';
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -95,6 +95,7 @@ function AppRoutes() {
           <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
           <Route path="/admin/careers" element={<AdminRoute><AdminCareers /></AdminRoute>} />
           <Route path="/admin/messages" element={<AdminRoute><AdminMessages /></AdminRoute>} />
+<Route path="/application-status" element={<ApplicationStatus />} />
 
           <Route path="*" element={<Navigate to={isAuthenticated ? getDashboardRoute() : "/"} />} />
         </Routes>
