@@ -25,15 +25,12 @@ export default function AdminCareers() {
   };
 
   const handleStatusChange = async (id, newStatus) => {
-    // Note: You'll need a backend endpoint to update application status
-    // For now, this shows the UI pattern
     try {
-      // await api.patch(`/accounts/admin/careers/${id}/`, { status: newStatus });
-      toast.success(`Application ${newStatus.toLowerCase()} successfully!`);
-      // Update local state
+      await api.patch(`/accounts/admin/careers/${id}/update/`, { status: newStatus });
       setApplications(apps =>
         apps.map(a => a.id === id ? { ...a, status: newStatus } : a)
       );
+      toast.success(`Application ${newStatus.toLowerCase()} successfully!`);
     } catch (error) {
       toast.error('Failed to update application.');
     }

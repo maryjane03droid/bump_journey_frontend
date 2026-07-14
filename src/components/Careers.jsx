@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiSend, FiX, FiBriefcase, FiCheckCircle } from 'react-icons/fi';
 import api from '../services/api';
@@ -77,13 +78,21 @@ export default function Careers() {
     <div className="min-h-screen">
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#2e7d32] to-[#1b5e20] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
           <h1 className="text-4xl font-extrabold" style={{ fontFamily: 'Poppins, sans-serif' }}>
             Join Our Team
           </h1>
           <p className="mt-3 text-white/80 max-w-lg mx-auto">
             We're looking for passionate healthcare professionals to support expectant mothers on their journey.
           </p>
+          
+          {/* Status Check Button Added Here */}
+          <Link
+            to="/application-status"
+            className="mt-6 inline-flex items-center justify-center bg-white text-[#2e7d32] px-6 py-2.5 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+          >
+            Check Application Status
+          </Link>
         </div>
       </section>
 

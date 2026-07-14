@@ -34,8 +34,10 @@ export default function Welcome() {
           <div className="absolute bottom-10 right-20 w-96 h-96 bg-[#8FBC8F] rounded-full blur-3xl"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-          <div className="max-w-2xl">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 flex flex-col lg:flex-row items-center justify-between gap-12">
+          
+          {/* Left Side: Text and Buttons */}
+          <div className="max-w-2xl lg:w-1/2 z-10">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
               Your Pregnancy Journey,{' '}
               <span className="text-[#8FBC8F]">Supported</span> Every Step
@@ -60,6 +62,20 @@ export default function Welcome() {
               </Link>
             </div>
           </div>
+
+          {/* Right Side: Image */}
+          <div className="lg:w-1/2 flex justify-center lg:justify-end z-10 w-full mt-10 lg:mt-0">
+            <div className="relative w-full max-w-md xl:max-w-lg">
+              <div className="absolute inset-0 bg-[#8FBC8F] rounded-full blur-2xl opacity-20 translate-x-4 translate-y-4"></div>
+              {/* Remember to update this src path to your actual image! */}
+              <img 
+                src="public/images/mother_baby.jpg" 
+                alt="Mother and baby" 
+                className="relative z-10 w-full h-auto rounded-3xl shadow-2xl border-4 border-white/10 object-cover"
+              />
+            </div>
+          </div>
+
         </div>
       </section>
 

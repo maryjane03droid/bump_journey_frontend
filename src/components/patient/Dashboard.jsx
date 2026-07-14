@@ -59,7 +59,7 @@ export default function PatientDashboard() {
       {/* Welcome Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[#2d3748]" style={{ fontFamily: 'Poppins, sans-serif' }}>
-          Welcome back, {user.username} 👋
+          Welcome back, {user.username} 
         </h1>
         <p className="text-[#718096] mt-1">Here's your pregnancy overview.</p>
       </div>

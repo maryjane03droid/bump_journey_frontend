@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FiMenu, FiX, FiUser, FiLogOut, FiLogIn } from 'react-icons/fi';
+import { FiMenu, FiX, FiUser, FiLogOut, FiLogIn, FiChevronDown } from 'react-icons/fi';
 
 export default function Navbar() {
   const { user, isAuthenticated, isPatient, isAnyStaff, isAdmin, logout, getDashboardRoute } = useAuth();
@@ -20,13 +20,13 @@ export default function Navbar() {
 
   const patientLinks = [
     { to: '/patient/dashboard', label: 'Dashboard' },
-  { to: '/patient/profile', label: 'Profile' },
-  { to: '/patient/tracker', label: 'Vitals' },
-  { to: '/patient/appointments', label: 'Appointments' },
-  { to: '/pregnancy-tips', label: 'Tips' },
-  { to: '/shop', label: 'Shop' },
-  { to: '/patient/audit-trail', label: 'Audit Trail' },
-  { to: '/contact', label: 'Contact' },
+    { to: '/patient/profile', label: 'Profile' },
+    { to: '/patient/tracker', label: 'Vitals' },
+    { to: '/patient/appointments', label: 'Appointments' },
+    { to: '/pregnancy-tips', label: 'Tips' },
+    { to: '/shop', label: 'Shop' },
+    { to: '/patient/audit-trail', label: 'Audit Trail' },
+    { to: '/contact', label: 'Contact' },
   ];
 
   const staffLinks = [
@@ -65,19 +65,51 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
-            {links.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`text-sm font-semibold transition-colors duration-200 ${
-                  isActive(link.to)
-                    ? 'text-white'
-                    : 'text-white/75 hover:text-white'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) => {
+              // Special Dropdown Render for Careers
+              if (link.label === 'Careers') {
+                return (
+                  <div key="careers-dropdown" className="relative group py-5">
+                    <button className={`flex items-center gap-1 text-sm font-semibold transition-colors duration-200 ${(isActive('/careers') || isActive('/application-status')) ? 'text-white' : 'text-white/75 hover:text-white'}`}>
+                      Careers
+                      <FiChevronDown className="transition-transform duration-200 group-hover:rotate-180" size={16} />
+                    </button>
+                    
+                    <div className="absolute top-full left-0 w-56 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="bg-white border border-[#e2e8f0] rounded-xl shadow-lg overflow-hidden flex flex-col">
+                        <Link 
+                          to="/careers" 
+                          className="px-4 py-3 text-sm font-medium text-[#2d3748] hover:bg-[#f0f7f0] hover:text-[#2e7d32] transition-colors border-b border-[#e2e8f0]"
+                        >
+                          View Open Positions
+                        </Link>
+                        <Link 
+                          to="/application-status" 
+                          className="px-4 py-3 text-sm font-medium text-[#718096] hover:bg-[#f0f7f0] hover:text-[#2e7d32] transition-colors"
+                        >
+                          Check Application Status
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              // Normal Link Render
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`text-sm font-semibold transition-colors duration-200 ${
+                    isActive(link.to)
+                      ? 'text-white'
+                      : 'text-white/75 hover:text-white'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
 
             {!isAuthenticated ? (
               <div className="flex items-center gap-3 ml-4">
@@ -123,18 +155,46 @@ export default function Navbar() {
 
       {mobileOpen && (
         <div className="md:hidden bg-[#256d2b] border-t border-white/10 px-4 pb-4">
-          {links.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              onClick={() => setMobileOpen(false)}
-              className={`block py-2.5 text-sm font-semibold ${
-                isActive(link.to) ? 'text-white' : 'text-white/75 hover:text-white'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            // Special Mobile Render for Careers
+            if (link.label === 'Careers') {
+              return (
+                <div key="careers-mobile" className="py-2.5">
+                  <div className="text-white/75 font-semibold text-sm mb-2">Careers</div>
+                  <div className="flex flex-col gap-2 pl-4 border-l border-white/20 ml-2">
+                    <Link
+                      to="/careers"
+                      onClick={() => setMobileOpen(false)}
+                      className={`block text-sm font-semibold ${isActive('/careers') ? 'text-white' : 'text-white/60 hover:text-white'}`}
+                    >
+                      View Open Positions
+                    </Link>
+                    <Link
+                      to="/application-status"
+                      onClick={() => setMobileOpen(false)}
+                      className={`block text-sm font-semibold ${isActive('/application-status') ? 'text-white' : 'text-white/60 hover:text-white'}`}
+                    >
+                      Check Application Status
+                    </Link>
+                  </div>
+                </div>
+              );
+            }
+
+            // Normal Mobile Render
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileOpen(false)}
+                className={`block py-2.5 text-sm font-semibold ${
+                  isActive(link.to) ? 'text-white' : 'text-white/75 hover:text-white'
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
 
           {!isAuthenticated ? (
             <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-white/10">

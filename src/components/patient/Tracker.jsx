@@ -20,10 +20,10 @@ const SYMPTOM_OPTIONS = [
 ];
 
 const MOOD_OPTIONS = [
-  { value: 'HAPPY', label: '😊 Happy' },
-  { value: 'SAD', label: '😢 Sad' },
-  { value: 'TIRED', label: '😴 Tired' },
-  { value: 'STRESSED', label: '😰 Stressed' },
+  { value: 'HAPPY', label: ' Happy' },
+  { value: 'SAD', label: ' Sad' },
+  { value: 'TIRED', label: ' Tired' },
+  { value: 'STRESSED', label: ' Stressed' },
 ];
 
 export default function Tracker() {
@@ -215,7 +215,7 @@ export default function Tracker() {
                   </span>
                 )}
                 {vital.urgent_attention_requested && (
-                  <span className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded-full font-medium">⚠️ Urgent</span>
+                  <span className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded-full font-medium">Urgent</span>
                 )}
                 <span className="text-xs text-[#718096] ml-auto">
                   {new Date(vital.recorded_at).toLocaleString()}
