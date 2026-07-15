@@ -178,9 +178,14 @@ export default function Shop() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {PRODUCTS.map((product) => (
             <div key={product.id} className="bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden hover:shadow-md hover:border-[#8FBC8F] transition-all duration-300">
-              {/* Product Image Placeholder */}
-              <div className="h-40 bg-[#f0f7f0] flex items-center justify-center text-5xl">
-                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              
+              {/* Product Image Placeholder - UPDATED */}
+              <div className="h-48 bg-white p-4 flex items-center justify-center border-b border-[#e2e8f0]">
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
+                  className="w-full h-full object-contain" 
+                />
               </div>
 
               <div className="p-5">
@@ -209,7 +214,7 @@ export default function Shop() {
 
         {/* Payment Notice */}
         <div className="mt-12 bg-[#f0f7f0] rounded-2xl p-6 text-center border border-[#e2e8f0]">
-          <p className="text-[#2d3748] font-medium">💳 Payment on delivery only</p>
+          <p className="text-[#2d3748] font-medium"> Payment on delivery only</p>
           <p className="text-sm text-[#718096] mt-1">No upfront payments. Pay the delivery person when you receive your items.</p>
         </div>
       </section>

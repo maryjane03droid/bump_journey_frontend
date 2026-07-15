@@ -18,14 +18,12 @@ export default function Navbar() {
     { to: '/shop', label: 'Shop' },
   ];
 
+  // Updated patientLinks to reduce clutter
   const patientLinks = [
     { to: '/patient/dashboard', label: 'Dashboard' },
-    { to: '/patient/profile', label: 'Profile' },
-    { to: '/patient/tracker', label: 'Vitals' },
-    { to: '/patient/appointments', label: 'Appointments' },
+    { to: '#', label: 'Profile' }, // This now acts as the dropdown trigger
     { to: '/pregnancy-tips', label: 'Tips' },
     { to: '/shop', label: 'Shop' },
-    { to: '/patient/audit-trail', label: 'Audit Trail' },
     { to: '/contact', label: 'Contact' },
   ];
 
@@ -53,6 +51,14 @@ export default function Navbar() {
 
   const links = getLinks();
 
+  // Helper to check if any profile sub-link is active
+  const isProfileActive = () => {
+    return isActive('/patient/profile') || 
+           isActive('/patient/tracker') || 
+           isActive('/patient/appointments') || 
+           isActive('/patient/audit-trail');
+  };
+
   return (
     <nav className="bg-[#2e7d32] shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,7 +72,7 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-6">
             {links.map((link) => {
-              // Special Dropdown Render for Careers
+              //  Dropdown for Careers
               if (link.label === 'Careers') {
                 return (
                   <div key="careers-dropdown" className="relative group py-5">
@@ -95,7 +101,48 @@ export default function Navbar() {
                 );
               }
 
-              // Normal Link Render
+              //  Dropdown Profile
+              if (link.label === 'Profile') {
+                return (
+                  <div key="profile-dropdown" className="relative group py-5">
+                    <button className={`flex items-center gap-1 text-sm font-semibold transition-colors duration-200 ${isProfileActive() ? 'text-white' : 'text-white/75 hover:text-white'}`}>
+                      Profile
+                      <FiChevronDown className="transition-transform duration-200 group-hover:rotate-180" size={16} />
+                    </button>
+                    
+                    <div className="absolute top-full left-0 w-48 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="bg-white border border-[#e2e8f0] rounded-xl shadow-lg overflow-hidden flex flex-col">
+                        <Link 
+                          to="/patient/profile" 
+                          className="px-4 py-3 text-sm font-medium text-[#2d3748] hover:bg-[#f0f7f0] hover:text-[#2e7d32] transition-colors border-b border-[#e2e8f0]"
+                        >
+                          My Profile
+                        </Link>
+                        <Link 
+                          to="/patient/tracker" 
+                          className="px-4 py-3 text-sm font-medium text-[#2d3748] hover:bg-[#f0f7f0] hover:text-[#2e7d32] transition-colors border-b border-[#e2e8f0]"
+                        >
+                          Vitals
+                        </Link>
+                        <Link 
+                          to="/patient/appointments" 
+                          className="px-4 py-3 text-sm font-medium text-[#2d3748] hover:bg-[#f0f7f0] hover:text-[#2e7d32] transition-colors border-b border-[#e2e8f0]"
+                        >
+                          Appointments
+                        </Link>
+                        <Link 
+                          to="/patient/audit-trail" 
+                          className="px-4 py-3 text-sm font-medium text-[#2d3748] hover:bg-[#f0f7f0] hover:text-[#2e7d32] transition-colors"
+                        >
+                          Audit Trail
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              
               return (
                 <Link
                   key={link.to}
@@ -131,7 +178,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3 ml-4">
                 <span className="flex items-center gap-2 bg-white/15 text-white px-4 py-1.5 rounded-full text-sm font-semibold">
                   <FiUser size={14} />
-                  {user.username}
+                  {user?.username}
                 </span>
                 <button
                   onClick={logout}
@@ -156,7 +203,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="md:hidden bg-[#256d2b] border-t border-white/10 px-4 pb-4">
           {links.map((link) => {
-            // Special Mobile Render for Careers
+            
             if (link.label === 'Careers') {
               return (
                 <div key="careers-mobile" className="py-2.5">
@@ -181,7 +228,46 @@ export default function Navbar() {
               );
             }
 
-            // Normal Mobile Render
+            
+            if (link.label === 'Profile') {
+              return (
+                <div key="profile-mobile" className="py-2.5">
+                  <div className="text-white/75 font-semibold text-sm mb-2">Profile Menu</div>
+                  <div className="flex flex-col gap-2 pl-4 border-l border-white/20 ml-2">
+                    <Link
+                      to="/patient/profile"
+                      onClick={() => setMobileOpen(false)}
+                      className={`block text-sm font-semibold ${isActive('/patient/profile') ? 'text-white' : 'text-white/60 hover:text-white'}`}
+                    >
+                      My Profile
+                    </Link>
+                    <Link
+                      to="/patient/tracker"
+                      onClick={() => setMobileOpen(false)}
+                      className={`block text-sm font-semibold ${isActive('/patient/tracker') ? 'text-white' : 'text-white/60 hover:text-white'}`}
+                    >
+                      Vitals
+                    </Link>
+                    <Link
+                      to="/patient/appointments"
+                      onClick={() => setMobileOpen(false)}
+                      className={`block text-sm font-semibold ${isActive('/patient/appointments') ? 'text-white' : 'text-white/60 hover:text-white'}`}
+                    >
+                      Appointments
+                    </Link>
+                    <Link
+                      to="/patient/audit-trail"
+                      onClick={() => setMobileOpen(false)}
+                      className={`block text-sm font-semibold ${isActive('/patient/audit-trail') ? 'text-white' : 'text-white/60 hover:text-white'}`}
+                    >
+                      Audit Trail
+                    </Link>
+                  </div>
+                </div>
+              );
+            }
+
+          
             return (
               <Link
                 key={link.to}
@@ -208,7 +294,7 @@ export default function Navbar() {
           ) : (
             <div className="mt-3 pt-3 border-t border-white/10">
               <span className="block text-white/80 text-sm mb-2">
-                Logged in as <strong>{user.username}</strong>
+                Logged in as <strong>{user?.username}</strong>
               </span>
               <button
                 onClick={() => { logout(); setMobileOpen(false); }}

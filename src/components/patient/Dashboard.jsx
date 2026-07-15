@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FiUser, FiActivity, FiCalendar, FiAlertCircle, FiShoppingCart, FiFileText } from 'react-icons/fi';
+import { FaSmile } from 'react-icons/fa'; // Added FaSmile import
 import api from '../../services/api';
 
 export default function PatientDashboard() {
@@ -58,10 +59,11 @@ export default function PatientDashboard() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Welcome Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#2d3748]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-[#2d3748] flex items-center gap-3" style={{ fontFamily: 'Poppins, sans-serif' }}>
           Welcome back, {user.username} 
+         
         </h1>
-        <p className="text-[#718096] mt-1">Here's your pregnancy overview.</p>
+        <p className="text-[#718096] mt-2 text-lg">Here's your pregnancy overview.</p>
       </div>
 
       {/* Due Date Alert */}
@@ -80,59 +82,68 @@ export default function PatientDashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
-        <Link to={profile ? '/patient/profile' : '/patient/profile'} className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#8FBC8F] hover:shadow-sm transition-all">
-          <div className="w-10 h-10 rounded-lg bg-[#2e7d32]/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-[#2e7d32] group-hover:text-white text-[#2e7d32] transition-colors">
-            <FiUser size={18} />
+        
+        {/* Profile - Olive Green */}
+        <Link to={profile ? '/patient/profile' : '/patient/profile'} className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#7A8B56] hover:shadow-md transition-all duration-300">
+          <div className="w-12 h-12 rounded-xl bg-[#7A8B56]/15 flex items-center justify-center mx-auto mb-3 group-hover:bg-[#7A8B56] group-hover:text-white text-[#7A8B56] transition-colors duration-300">
+            <FiUser size={20} />
           </div>
-          <p className="text-xs font-medium text-[#2d3748]">{profile ? 'Profile' : 'Create Profile'}</p>
+          <p className="text-sm font-semibold text-[#2d3748]">{profile ? 'Profile' : 'Create Profile'}</p>
         </Link>
 
-        <Link to="/patient/tracker" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#8FBC8F] hover:shadow-sm transition-all">
-          <div className="w-10 h-10 rounded-lg bg-[#2e7d32]/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-[#2e7d32] group-hover:text-white text-[#2e7d32] transition-colors">
-            <FiActivity size={18} />
+        {/* Log Vitals - Soft Pink */}
+        <Link to="/patient/tracker" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#D88C9A] hover:shadow-md transition-all duration-300">
+          <div className="w-12 h-12 rounded-xl bg-[#D88C9A]/15 flex items-center justify-center mx-auto mb-3 group-hover:bg-[#D88C9A] group-hover:text-white text-[#D88C9A] transition-colors duration-300">
+            <FiActivity size={20} />
           </div>
-          <p className="text-xs font-medium text-[#2d3748]">Log Vitals</p>
+          <p className="text-sm font-semibold text-[#2d3748]">Log Vitals</p>
         </Link>
 
-        <Link to="/patient/appointments" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#8FBC8F] hover:shadow-sm transition-all">
-          <div className="w-10 h-10 rounded-lg bg-[#2e7d32]/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-[#2e7d32] group-hover:text-white text-[#2e7d32] transition-colors">
-            <FiCalendar size={18} />
+        {/* Appointments - Slate Blue */}
+        <Link to="/patient/appointments" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#729BBD] hover:shadow-md transition-all duration-300">
+          <div className="w-12 h-12 rounded-xl bg-[#729BBD]/15 flex items-center justify-center mx-auto mb-3 group-hover:bg-[#729BBD] group-hover:text-white text-[#729BBD] transition-colors duration-300">
+            <FiCalendar size={20} />
           </div>
-          <p className="text-xs font-medium text-[#2d3748]">Appointments</p>
+          <p className="text-sm font-semibold text-[#2d3748]">Appointments</p>
         </Link>
 
-        <Link to="/patient/audit-trail" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#8FBC8F] hover:shadow-sm transition-all">
-          <div className="w-10 h-10 rounded-lg bg-[#2e7d32]/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-[#2e7d32] group-hover:text-white text-[#2e7d32] transition-colors">
-            <FiFileText size={18} />
+        {/* Audit Trail - Soft Purple */}
+        <Link to="/patient/audit-trail" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#9D84B6] hover:shadow-md transition-all duration-300">
+          <div className="w-12 h-12 rounded-xl bg-[#9D84B6]/15 flex items-center justify-center mx-auto mb-3 group-hover:bg-[#9D84B6] group-hover:text-white text-[#9D84B6] transition-colors duration-300">
+            <FiFileText size={20} />
           </div>
-          <p className="text-xs font-medium text-[#2d3748]">Audit Trail</p>
+          <p className="text-sm font-semibold text-[#2d3748]">Audit Trail</p>
         </Link>
 
-        <Link to="/shop" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#8FBC8F] hover:shadow-sm transition-all">
-          <div className="w-10 h-10 rounded-lg bg-[#2e7d32]/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-[#2e7d32] group-hover:text-white text-[#2e7d32] transition-colors">
-            <FiShoppingCart size={18} />
+        {/* Shop - Soft Yellow/Gold */}
+        <Link to="/shop" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#D4AF37] hover:shadow-md transition-all duration-300">
+          <div className="w-12 h-12 rounded-xl bg-[#D4AF37]/15 flex items-center justify-center mx-auto mb-3 group-hover:bg-[#D4AF37] group-hover:text-white text-[#D4AF37] transition-colors duration-300">
+            <FiShoppingCart size={20} />
           </div>
-          <p className="text-xs font-medium text-[#2d3748]">Shop</p>
+          <p className="text-sm font-semibold text-[#2d3748]">Shop</p>
         </Link>
 
-        <Link to="/pregnancy-tips" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#8FBC8F] hover:shadow-sm transition-all">
-          <div className="w-10 h-10 rounded-lg bg-[#2e7d32]/10 flex items-center justify-center mx-auto mb-2 group-hover:bg-[#2e7d32] group-hover:text-white text-[#2e7d32] transition-colors">
-            <FiAlertCircle size={18} />
+        {/* Tips - Theme Green */}
+        <Link to="/pregnancy-tips" className="group bg-white rounded-xl border border-[#e2e8f0] p-4 text-center hover:border-[#2e7d32] hover:shadow-md transition-all duration-300">
+          <div className="w-12 h-12 rounded-xl bg-[#2e7d32]/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-[#2e7d32] group-hover:text-white text-[#2e7d32] transition-colors duration-300">
+            <FiAlertCircle size={20} />
           </div>
-          <p className="text-xs font-medium text-[#2d3748]">Tips</p>
+          <p className="text-sm font-semibold text-[#2d3748]">Tips</p>
         </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {/* Profile Summary */}
-        <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6">
-          <h3 className="font-semibold text-[#2d3748] mb-3">Profile</h3>
+        <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h3 className="font-bold text-[#2d3748] mb-4 text-lg">Profile</h3>
           {profile ? (
-            <div className="space-y-2">
-              <p className="text-sm text-[#718096]">Week: <span className="font-medium text-[#2d3748]">{profile.current_week}</span></p>
-              <p className="text-sm text-[#718096]">Due: <span className="font-medium text-[#2d3748]">{profile.estimated_due_date || 'Calculating...'}</span></p>
-              <p className="text-sm text-[#718096]">Blood Group: <span className="font-medium text-[#2d3748]">{profile.blood_group}</span></p>
+            <div className="space-y-3">
+              <p className="text-sm text-[#718096] flex justify-between"><span>Week:</span> <span className="font-bold text-[#2e7d32]">{profile.current_week}</span></p>
+              <div className="h-px bg-gray-100"></div>
+              <p className="text-sm text-[#718096] flex justify-between"><span>Due:</span> <span className="font-semibold text-[#2d3748]">{profile.estimated_due_date || 'Calculating...'}</span></p>
+              <div className="h-px bg-gray-100"></div>
+              <p className="text-sm text-[#718096] flex justify-between"><span>Blood Group:</span> <span className="font-semibold text-[#2d3748]">{profile.blood_group}</span></p>
             </div>
           ) : (
             <div>
@@ -143,14 +154,16 @@ export default function PatientDashboard() {
         </div>
 
         {/* Recent Vitals */}
-        <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6">
-          <h3 className="font-semibold text-[#2d3748] mb-3">Latest Vitals</h3>
+        <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h3 className="font-bold text-[#2d3748] mb-4 text-lg">Latest Vitals</h3>
           {vitals.length > 0 ? (
-            <div className="space-y-2">
-              <p className="text-sm text-[#718096]">BP: <span className="font-medium text-[#2d3748]">{vitals[0].blood_pressure}</span></p>
-              <p className="text-sm text-[#718096]">Weight: <span className="font-medium text-[#2d3748]">{vitals[0].weight_kg} kg</span></p>
-              <p className="text-sm text-[#718096]">Kicks: <span className="font-medium text-[#2d3748]">{vitals[0].fetal_kick_count || 'N/A'}</span></p>
-              <p className="text-xs text-[#718096] mt-2">Recorded: {new Date(vitals[0].recorded_at).toLocaleDateString()}</p>
+            <div className="space-y-3">
+              <p className="text-sm text-[#718096] flex justify-between"><span>BP:</span> <span className="font-semibold text-[#2d3748]">{vitals[0].blood_pressure}</span></p>
+              <div className="h-px bg-gray-100"></div>
+              <p className="text-sm text-[#718096] flex justify-between"><span>Weight:</span> <span className="font-semibold text-[#2d3748]">{vitals[0].weight_kg} kg</span></p>
+              <div className="h-px bg-gray-100"></div>
+              <p className="text-sm text-[#718096] flex justify-between"><span>Kicks:</span> <span className="font-semibold text-[#2d3748]">{vitals[0].fetal_kick_count || 'N/A'}</span></p>
+              <p className="text-xs text-[#a0aec0] mt-3 italic">Recorded: {new Date(vitals[0].recorded_at).toLocaleDateString()}</p>
             </div>
           ) : (
             <div>
@@ -161,18 +174,18 @@ export default function PatientDashboard() {
         </div>
 
         {/* Appointments */}
-        <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6">
-          <h3 className="font-semibold text-[#2d3748] mb-3">Appointments</h3>
+        <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h3 className="font-bold text-[#2d3748] mb-4 text-lg">Appointments</h3>
           {appointments.length > 0 ? (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {appointments.slice(0, 3).map((appt) => (
-                <div key={appt.id} className="flex justify-between items-center">
-                  <p className="text-sm text-[#718096] truncate">{appt.reason || 'Appointment'}</p>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                <div key={appt.id} className="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                  <p className="text-sm font-medium text-[#4a5568] truncate max-w-[120px]">{appt.reason || 'Appointment'}</p>
+                  <span className={`text-xs px-2.5 py-1 rounded-full font-bold tracking-wide ${
                     appt.status === 'SCHEDULED' ? 'bg-green-100 text-green-700' :
                     appt.status === 'REQUESTED' ? 'bg-yellow-100 text-yellow-700' :
                     appt.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' :
-                    'bg-gray-100 text-gray-600'
+                    'bg-gray-200 text-gray-700'
                   }`}>
                     {appt.status}
                   </span>

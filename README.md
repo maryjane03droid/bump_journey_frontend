@@ -1,70 +1,136 @@
-# Getting Started with Create React App
+# BumpJourney 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+BumpJourney is a comprehensive maternity care and pregnancy tracking platform designed to bridge the gap between expecting mothers and clinical staff (Doctors, Midwives, Nutritionists, Nurses, and Therapists). The platform streamlines appointment scheduling, vital health tracking, medical lock-ins, and peer-to-peer staff referrals, ensuring a safe, collaborative, and supported pregnancy journey.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+##  Screen Shots
 
-### `npm start`
+### Welcome Page
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+![Welcome Page](image.png)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+### Patient Dashboard
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+![Patient Dashboard](image-2.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Staff Dashboard
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![Staff Dashboard](image-1.png)
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Admin Dashboard
+> *The administrative back-office to approve medical staff, manage site users, and view system-wide logs.*
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![Admin Dashboard](image-3.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+##  Project Overview
 
-## Learn More
+Managing maternal healthcare requires seamless communication between various medical practitioners. **BumpJourney** addresses this by providing:
+*   **For Patients:** A personal dashboard to book appointments, document pregnancy symptoms, log vitals, and view progress.
+*   **For Staff:** An interactive workflow workspace where they can "lock" appointments they are handling, write clinical notes, and refer complex cases directly to specialists (e.g., Doctors referring to Nutritionists or Midwives) with real-time dashboard notification updates.
+*   **For Admins:** Robust management tools to verify and approve newly registered medical practitioners before they enter the staff registry.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+##  System Architecture
+┌─────────────────────────────────────────────────────────┐
+   │                   REACT FRONTEND (SPA)                  │
+   │     - State Management (Context API)                    │
+   │     - Responsive Design (Tailwind CSS, React Icons)     │
+   └────────────────────────────┬────────────────────────────┘
+                                │
+                   HTTP / REST API Calls (Axios)
+                                │
+                                ▼
+   ┌─────────────────────────────────────────────────────────┐
+   │                   DJANGO REST BACKEND                   │
+   │     - CORS Headers & Authentication Middleware           │
+   │     - Routing Engine (Project & App Level URLs)         │
+   └────────────────────────────┬────────────────────────────┘
+                                │
+                    Django ORM Database Queries
+                                │
+                                ▼
+   ┌─────────────────────────────────────────────────────────┐
+   │                   RELATIONAL DATABASE                   │
+   │     - SQLite (Local Dev) / PostgreSQL (Production)      │
+   │     - Tables: Users, Appointments, StaffNotes, Vitals   │
+### Core Architecture Flows:
+1.  **Authentication Flow:** Token-based authentication securely logs in users, mapping them to explicit custom roles (`PATIENT`, `DOCTOR`, `NUTRITIONIST`, `NURSE`, etc.).
+2.  **Referral Pipeline:** When a staff member initiates a referral, the backend updates the appointment’s `referred_to` field, triggering a data-level query update. The targeted specialist's dashboard immediately flags the incoming case.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+##  Technical Stack
 
-### Analyzing the Bundle Size
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Frontend** | React.js | Single Page Application (SPA) library |
+| | Tailwind CSS | Utility-first styling framework |
+| | React Icons | Iconography engine |
+| | Axios | Promise-based HTTP client for API communication |
+| **Backend** | Django | High-level Python Web Framework |
+| | Django REST Framework (DRF) | Toolkit for building robust Web APIs |
+| **Database** | SQLite / PostgreSQL | Relational database storage |
+| **Security** | Django Cors Headers | Cross-Origin Resource Sharing (CORS) handling |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+##  Future Improvements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+I am continuously evolving BumpJourney. Below is our immediate developmental roadmap:
 
-### Advanced Configuration
+###  M-Pesa Integration (Maternity Shop)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+*   **M-Pesa Express (STK Push):** Enable instant mobile checkout directly on the website. Mothers can enter their phone number and receive a secure PIN prompt on their phones to complete payments seamlessly.
 
-### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+##  Getting Started
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Prerequisites
+*   Python 3.10+
+*   Node.js (v16+)
+*   npm 
+
+### Backend Setup
+1. Clone the repository and navigate to the project root:
+   ```bash
+   cd bump_journey_project
+Create and activate a virtual environment:
+
+Bash
+python -m venv venv
+# On Windows:
+.\venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+Install backend dependencies:
+
+### Bash
+pip install -r requirements.txtBash
+python manage.py migrate
+python manage.py runserver
+## Frontend Setup
+Navigate to the frontend directory:
+
+Bash
+cd frontend
+Install Javascript dependencies:
+
+Bash
+npm install
+Start the React development environment:
+
+Bash
+npm run dev

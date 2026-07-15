@@ -169,7 +169,7 @@ export default function StaffDashboard() {
                         'bg-purple-100 text-purple-700'
                       }`}>
                         {appt.status?.replace(/_/g, ' ')}
-                       </span>
+                      </span>
                     </td>
                   </tr>
                 ))}

@@ -1,4 +1,4 @@
- import { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -94,18 +94,20 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-8">
+      {/* Increased max-width to accommodate a 2-column layout */}
+      <div className="w-full max-w-2xl">
+        <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-[#2d3748]" style={{ fontFamily: 'Poppins, sans-serif' }}>
             Create Account
           </h1>
-          <p className="mt-2 text-[#718096]">Join Bump Journey today</p>
+          <p className="mt-1 text-[#718096]">Join Bump Journey today</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-[#e2e8f0] p-8">
-          {/* User Type Toggle */}
-          <div className="mb-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-[#e2e8f0] p-6 md:p-8">
+          
+          {/* User Type Toggle - Spans full width */}
+          <div className="mb-5">
             <label className="block text-sm font-medium text-[#2d3748] mb-2">I am signing up as:</label>
             <div className="flex gap-2">
               <button
@@ -133,7 +135,7 @@ export default function Signup() {
             </div>
           </div>
 
-          {/* Staff notice */}
+          {/* Staff notice - Spans full width */}
           {userType === 'STAFF' && (
             <div className="mb-5 p-3 bg-yellow-50 border border-yellow-200 rounded-xl">
               <p className="text-xs text-yellow-800">
@@ -143,101 +145,106 @@ export default function Signup() {
             </div>
           )}
 
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all"
-              placeholder="Choose a username"
-            />
-          </div>
-
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all"
-              placeholder="your@email.com"
-            />
-          </div>
-
-          {/* Staff-specific fields */}
-          {userType === 'STAFF' && (
-            <>
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Staff Role</label>
-                <select
-                  value={staffRole}
-                  onChange={(e) => setStaffRole(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all"
-                >
-                  <option value="">Select your role</option>
-                  {STAFF_ROLES.map(r => (
-                    <option key={r.value} value={r.value}>{r.label}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-[#2d3748] mb-1.5">License Number (10 digits)</label>
-                <input
-                  type="text"
-                  value={licenseNumber}
-                  onChange={(e) => setLicenseNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                  required
-                  maxLength="10"
-                  className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all font-mono"
-                  placeholder="e.g. 1234567890"
-                />
-                <p className="text-xs text-[#718096] mt-1">{licenseNumber.length}/10 digits</p>
-              </div>
-            </>
-          )}
-
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Password</label>
-            <div className="relative">
+          {/* 2-Column Grid Container for Inputs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+            
+            <div>
+              <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Username</label>
               <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all pr-12"
-                placeholder="Min 8 characters"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all"
+                placeholder="Choose a username"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#718096] hover:text-[#2d3748]"
-              >
-                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
-              </button>
             </div>
-          </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Confirm Password</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all"
-              placeholder="Repeat your password"
-            />
+            <div>
+              <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all"
+                placeholder="your@email.com"
+              />
+            </div>
+
+            {/* Staff-specific fields */}
+            {userType === 'STAFF' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Staff Role</label>
+                  <select
+                    value={staffRole}
+                    onChange={(e) => setStaffRole(e.target.value)}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all"
+                  >
+                    <option value="">Select your role</option>
+                    {STAFF_ROLES.map(r => (
+                      <option key={r.value} value={r.value}>{r.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2d3748] mb-1.5">License Number</label>
+                  <input
+                    type="text"
+                    value={licenseNumber}
+                    onChange={(e) => setLicenseNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                    required
+                    maxLength="10"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all font-mono"
+                    placeholder="e.g. 1234567890"
+                  />
+                  <p className="text-[10px] text-[#718096] mt-1 text-right">{licenseNumber.length}/10 digits</p>
+                </div>
+              </>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all pr-12"
+                  placeholder="Min 8 characters"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#718096] hover:text-[#2d3748]"
+                >
+                  {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#2d3748] mb-1.5">Confirm Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] bg-[#fcfdfc] text-[#2d3748] text-sm focus:outline-none focus:border-[#8FBC8F] focus:ring-2 focus:ring-[#8FBC8F]/30 transition-all"
+                placeholder="Repeat your password"
+              />
+            </div>
+
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#2e7d32] text-white py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 hover:bg-[#256d2b] disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-200"
+            className="w-full bg-[#2e7d32] text-white py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 hover:bg-[#256d2b] disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-200"
           >
             {loading ? (
               <span>{userType === 'PATIENT' ? 'Creating account...' : 'Registering...'}</span>
@@ -249,7 +256,7 @@ export default function Signup() {
             )}
           </button>
 
-          <p className="text-center text-sm text-[#718096] mt-6">
+          <p className="text-center text-sm text-[#718096] mt-5">
             Already have an account?{' '}
             <Link to="/login" className="text-[#2e7d32] font-semibold hover:underline">
               Login

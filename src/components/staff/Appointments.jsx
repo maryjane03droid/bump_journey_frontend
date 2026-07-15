@@ -37,7 +37,7 @@ export default function StaffAppointments() {
 
   const handleLock = async (id) => {
     try {
-      const res = await api.post(`/staff/appointments/${id}/lock/`);
+      const res = await api.post(`/staff/appointments/${id}/attend/`);
       toast.success(res.data.message || 'Case locked successfully.');
       fetchData();
     } catch (error) {

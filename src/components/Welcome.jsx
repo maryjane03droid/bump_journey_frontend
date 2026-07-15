@@ -67,7 +67,7 @@ export default function Welcome() {
           <div className="lg:w-1/2 flex justify-center lg:justify-end z-10 w-full mt-10 lg:mt-0">
             <div className="relative w-full max-w-md xl:max-w-lg">
               <div className="absolute inset-0 bg-[#8FBC8F] rounded-full blur-2xl opacity-20 translate-x-4 translate-y-4"></div>
-              {/* Remember to update this src path to your actual image! */}
+              
               <img 
                 src="public/images/mother_baby.jpg" 
                 alt="Mother and baby" 

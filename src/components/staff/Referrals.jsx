@@ -22,20 +22,34 @@ export default function Referrals() {
     try {
       const [apptRes, usersRes] = await Promise.all([
         api.get('/staff/appointments/'),
-        api.get('/accounts/admin/users/').catch(() => ({ data: { data: [] } })),
+        api.get('/staff/users/')
+           .catch(() => ({ data: { data: [] } })) 
       ]);
 
-      const apptData = apptRes.data.data || apptRes.data;
+      
+      const apptData = apptRes.data?.results || apptRes.data?.data || apptRes.data;
       setAppointments(Array.isArray(apptData) ? apptData : []);
 
-      // Filter staff from users list
-      const usersData = usersRes.data.data || usersRes.data;
+      
+      const usersData = usersRes.data?.data || usersRes.data?.results || usersRes.data;
       const staffRoles = ['DOCTOR', 'PEDIATRICIAN', 'NURSE', 'MIDWIFE', 'NUTRITIONIST', 'LAB_TECHNICIAN', 'THERAPIST'];
+      
       const staff = Array.isArray(usersData)
-        ? usersData.filter(u => staffRoles.includes(u.role) && u.is_approved && u.id !== user.userId)
+        ? usersData.filter(u => {
+            
+            const hasValidRole = typeof u.role === 'string' && staffRoles.includes(u.role.toUpperCase());
+            // 2. Check both id and userId 
+            const isNotSelf = u.id !== user?.id && u.id !== user?.userId;
+            // 3. Allow if is_approved is true OR if the field doesn't exist
+            const isApproved = u.is_approved !== false; 
+            
+            return hasValidRole && isNotSelf && isApproved;
+          })
         : [];
+        
       setStaffList(staff);
     } catch (error) {
+      console.error("Fetch data error:", error);
       toast.error('Failed to load data.');
     } finally {
       setLoading(false);
@@ -74,7 +88,7 @@ export default function Referrals() {
   );
 
   const receivedReferrals = appointments.filter(a =>
-    a.referred_to_username === user.username
+    a.referred_to_username === user?.username
   );
 
   if (loading) {

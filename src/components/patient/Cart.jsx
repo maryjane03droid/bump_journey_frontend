@@ -105,8 +105,14 @@ export default function Cart() {
         <div className="lg:col-span-2 space-y-4">
           {cart.map((item) => (
             <div key={item.id} className="bg-white rounded-xl border border-[#e2e8f0] p-5 flex items-center gap-4">
-              <div className="w-14 h-14 bg-[#f0f7f0] rounded-xl flex items-center justify-center text-2xl shrink-0">
-                {item.image}
+              
+              {/* UPDATED: Product Image Thumbnail */}
+              <div className="w-14 h-14 bg-white border border-[#e2e8f0] rounded-xl flex items-center justify-center shrink-0 overflow-hidden p-1">
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className="w-full h-full object-contain" 
+                />
               </div>
 
               <div className="flex-1 min-w-0">

@@ -59,7 +59,7 @@ export default function AdminDashboard() {
         <h1 className="text-2xl font-bold text-[#2d3748]" style={{ fontFamily: 'Poppins, sans-serif' }}>
           Admin Dashboard
         </h1>
-        <p className="text-[#718096] mt-1">Welcome, {user.username}. Here's your system overview.</p>
+        <p className="text-[#718096] mt-1">Welcome, {user.username}</p>
       </div>
 
       {/* Stats */}

@@ -17,13 +17,13 @@ export default function ApplicationStatus() {
     setResult(null);
 
     try {
-      // Assuming your backend supports this filtered get
+      
       const res = await api.get(`/accounts/careers/status/?email=${email}`);
-      setResult(res.data); // Assuming backend returns the object directly
+      setResult(res.data); 
       setSearched(true);
     } catch (error) {
       if (error.response?.status === 404) {
-        setSearched(true); // Will trigger the "No application found" UI
+        setSearched(true); 
       } else {
         toast.error('Unable to connect to server. Please try again later.');
       }
