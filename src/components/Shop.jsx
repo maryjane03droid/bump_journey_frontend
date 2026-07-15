@@ -10,7 +10,7 @@ const PRODUCTS = [
     name: 'Maternity Support Belt', 
     price: 1500, 
     rating: 4.5, 
-    image: 'public/images/maternity-belt.jpg', 
+    image: '/images/maternity-belt.jpg', 
     description: 'Adjustable belly band for back support during pregnancy.' 
   },
   { 
@@ -18,7 +18,7 @@ const PRODUCTS = [
     name: 'Baby Diaper Pack (50pcs)', 
     price: 1200, 
     rating: 4.8, 
-    image: 'public/images/diaper-pack.jpg', 
+    image: '/images/diaper-pack.jpg', 
     description: 'Ultra-soft, hypoallergenic diapers for newborns.' 
   },
   { 
@@ -26,7 +26,7 @@ const PRODUCTS = [
     name: 'Organic Baby Oil', 
     price: 650, 
     rating: 4.6, 
-    image: 'public/images/baby-oil.jpg', 
+    image: '/images/baby-oil.jpg', 
     description: 'Natural moisturizing oil for delicate baby skin.' 
   },
   { 
@@ -34,7 +34,7 @@ const PRODUCTS = [
     name: 'Nursing Pillow', 
     price: 2200, 
     rating: 4.7, 
-    image: 'public/images/nursing-pillow.jpg', 
+    image: '/images/nursing-pillow.jpg', 
     description: 'Ergonomic breastfeeding support pillow.' 
   },
   { 
@@ -42,7 +42,7 @@ const PRODUCTS = [
     name: 'Baby Blanket Set', 
     price: 1800, 
     rating: 4.4, 
-    image: 'public/images/baby-blanket.jpg', 
+    image: '/images/baby-blanket.jpg', 
     description: 'Soft cotton blankets in 3 adorable colors.' 
   },
   { 
@@ -50,7 +50,7 @@ const PRODUCTS = [
     name: 'Pregnancy Pillow', 
     price: 3500, 
     rating: 4.9, 
-    image: 'public/images/pregnancy-pillow.jpg', 
+    image: '/images/pregnancy-pillow.jpg', 
     description: 'Full-body pillow for comfortable sleep in all trimesters.' 
   },
   { 
@@ -58,7 +58,7 @@ const PRODUCTS = [
     name: 'Feeding Bottle Set (3pcs)', 
     price: 950, 
     rating: 4.3, 
-    image: 'public/images/bottle-set.jpg', 
+    image: '/images/bottle-set.jpg', 
     description: 'Anti-colic bottles with natural-feel nipples.' 
   },
   { 
@@ -66,7 +66,7 @@ const PRODUCTS = [
     name: 'Hospital Bag Kit', 
     price: 4500, 
     rating: 4.8, 
-    image: 'public/images/hospital-bag.jpg', 
+    image: '/images/hospital-bag.jpg', 
     description: 'Everything you need packed and ready for delivery day.' 
   },
   { 
@@ -74,7 +74,7 @@ const PRODUCTS = [
     name: 'Stretch Mark Cream', 
     price: 800, 
     rating: 4.2, 
-    image: 'public/images/stretch-mark-cream.jpg', 
+    image: '/images/stretch-mark-cream.jpg', 
     description: 'Cocoa butter formula to prevent and reduce stretch marks.' 
   },
   { 
@@ -82,7 +82,7 @@ const PRODUCTS = [
     name: 'Baby Clothes Bundle', 
     price: 2800, 
     rating: 4.6, 
-    image: 'public/images/baby-clothes.jpg', 
+    image: '/images/baby-clothes.jpg', 
     description: '10-piece newborn essentials set (0-3 months).' 
   },
   { 
@@ -90,7 +90,7 @@ const PRODUCTS = [
     name: 'Prenatal Vitamins (60 tabs)', 
     price: 1100, 
     rating: 4.7, 
-    image: 'public/images/prenatal-vitamins.jpg', 
+    image: '/images/prenatal-vitamins.jpg', 
     description: 'Folic acid, iron, and DHA for mother and baby.' 
   },
   { 
@@ -98,7 +98,7 @@ const PRODUCTS = [
     name: 'Nursing Pads (30pcs)', 
     price: 450, 
     rating: 4.5, 
-    image: 'public/images/nursing-pads.jpg', 
+    image: '/images/nursing-pads.jpg', 
     description: 'Disposable, ultra-absorbent breast pads.' 
   }
 ];

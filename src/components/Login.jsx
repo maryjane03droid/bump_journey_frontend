@@ -108,7 +108,7 @@ export default function Login() {
         <div className="hidden md:block relative bg-[#f4f7f4] overflow-hidden">
           {}
           <img 
-            src="public/images/download.jpg" 
+            src="/images/download.jpg" 
             alt="Bump Journey banner" 
             className="w-full h-full object-cover"
             onError={(e) => {

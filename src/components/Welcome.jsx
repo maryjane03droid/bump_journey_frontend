@@ -69,7 +69,7 @@ export default function Welcome() {
               <div className="absolute inset-0 bg-[#8FBC8F] rounded-full blur-2xl opacity-20 translate-x-4 translate-y-4"></div>
               
               <img 
-                src="public/images/mother_baby.jpg" 
+                src="/images/mother_baby.jpg" 
                 alt="Mother and baby" 
                 className="relative z-10 w-full h-auto rounded-3xl shadow-2xl border-4 border-white/10 object-cover"
               />
